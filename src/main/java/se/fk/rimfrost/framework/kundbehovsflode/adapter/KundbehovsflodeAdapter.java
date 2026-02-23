@@ -3,9 +3,12 @@ package se.fk.rimfrost.framework.kundbehovsflode.adapter;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import se.fk.github.jaxrsclientfactory.JaxrsClientFactory;
-import se.fk.github.jaxrsclientfactory.JaxrsClientOptionsBuilders;
+import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.proxy.WebResourceFactory;
 import se.fk.rimfrost.framework.kundbehovsflode.adapter.dto.KundbehovsflodeRequest;
 import se.fk.rimfrost.framework.kundbehovsflode.adapter.dto.KundbehovsflodeResponse;
 import se.fk.rimfrost.framework.kundbehovsflode.adapter.dto.PatchErsattningRequest;
@@ -29,9 +32,13 @@ public class KundbehovsflodeAdapter
    @PostConstruct
    void init()
    {
-      this.kundbehovsClient = new JaxrsClientFactory()
-            .create(JaxrsClientOptionsBuilders.createClient(kundbehovsflodeBaseUrl, KundbehovsflodeControllerApi.class)
-                  .build());
+      ClientConfig clientConfig = new ClientConfig();
+      clientConfig.connectorProvider(new ApacheConnectorProvider());
+      Client client = ClientBuilder.newClient(clientConfig);
+
+      this.kundbehovsClient = WebResourceFactory.newResource(
+            KundbehovsflodeControllerApi.class,
+            client.target(this.kundbehovsflodeBaseUrl));
    }
 
    public KundbehovsflodeResponse getKundbehovsflodeInfo(KundbehovsflodeRequest kundbehovsflodeRequest)

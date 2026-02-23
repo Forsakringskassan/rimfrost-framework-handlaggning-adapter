@@ -8,10 +8,8 @@ import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.FSSAinformatio
 import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Roll;
 import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.UppgiftStatus;
 import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Verksamhetslogik;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import static se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.UppgiftStatus.*;
 
 @ApplicationScoped
