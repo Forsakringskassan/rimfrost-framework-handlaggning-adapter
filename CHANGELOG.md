@@ -2,6 +2,12 @@
 
 Changelog of rimfrost-framework-kundbehovsflode-adapter.
 
+## 0.1.2 (2026-02-24)
+
+### Bug Fixes
+
+-  bump openapi version ([414ea](https://github.com/Forsakringskassan/rimfrost-framework-kundbehovsflode-adapter/commit/414eade95a157d3) Nils Elveros)  
+
 ## 0.1.1 (2026-02-23)
 
 ### Bug Fixes
