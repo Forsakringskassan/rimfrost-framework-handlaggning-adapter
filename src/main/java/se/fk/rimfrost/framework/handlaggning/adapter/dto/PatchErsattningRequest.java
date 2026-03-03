@@ -7,7 +7,7 @@ import java.util.UUID;
 @Value.Immutable
 public interface PatchErsattningRequest
 {
-   UUID kundbehovsflodeId();
+   UUID handlaggningId();
 
    List<UpdateHandlaggningErsattning> ersattningar();
 

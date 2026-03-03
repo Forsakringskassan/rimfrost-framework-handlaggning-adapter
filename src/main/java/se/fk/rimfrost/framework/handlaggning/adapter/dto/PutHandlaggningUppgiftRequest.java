@@ -7,7 +7,7 @@ import java.util.UUID;
 @Value.Immutable
 public interface PutHandlaggningUppgiftRequest
 {
-   UUID kundbehovsflodeId();
+   UUID handlaggningId();
 
    UpdateHandlaggningUppgift uppgift();
 

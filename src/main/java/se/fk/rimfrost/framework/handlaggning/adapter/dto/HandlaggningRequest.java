@@ -7,6 +7,6 @@ import java.util.UUID;
 public interface HandlaggningRequest
 {
 
-   UUID kundbehovsflodeId();
+   UUID handlaggningId();
 
 }

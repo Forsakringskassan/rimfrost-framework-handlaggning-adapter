@@ -6,7 +6,6 @@ import se.fk.rimfrost.framework.handlaggning.adapter.dto.ImmutableErsattning;
 import se.fk.rimfrost.framework.handlaggning.adapter.dto.ImmutableHandlaggningResponse;
 import se.fk.rimfrost.framework.handlaggning.adapter.dto.PatchErsattningRequest;
 import se.fk.rimfrost.framework.handlaggning.adapter.dto.PutHandlaggningUppgiftRequest;
-import se.fk.rimfrost.framework.handlaggning.adapter.dto.*;
 import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.*;
 import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Beslutsutfall;
 import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.FSSAinformation;
@@ -85,7 +84,7 @@ public class HandlaggningMapper
 
       var uppgift = new Uppgift();
       uppgift.setId(request.uppgift().id());
-      uppgift.setHandlaggningId(request.kundbehovsflodeId());
+      uppgift.setHandlaggningId(request.handlaggningId());
       uppgift.setFsSAinformation(mapFssaInformation(request.uppgift().fsSAinformation()));
       uppgift.setSkapadTs(request.uppgift().skapadTs());
       uppgift.setUtfordTs(request.uppgift().utfordTs());

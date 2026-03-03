@@ -21,10 +21,10 @@ import static io.quarkus.arc.impl.UncaughtExceptions.LOGGER;
 public class HandlaggningAdapter
 {
 
-   @ConfigProperty(name = "kundbehovsflode.api.base-url")
-   String kundbehovsflodeBaseUrl;
+   @ConfigProperty(name = "handlaggning.api.base-url")
+   String handlaggningBaseUrl;
 
-   private HandlaggningControllerApi kundbehovsClient;
+   private HandlaggningControllerApi handlaggningClient;
 
    @Inject
    HandlaggningMapper handlaggningMapper;
@@ -36,46 +36,46 @@ public class HandlaggningAdapter
       clientConfig.connectorProvider(new ApacheConnectorProvider());
       Client client = ClientBuilder.newClient(clientConfig);
 
-      this.kundbehovsClient = WebResourceFactory.newResource(
+      this.handlaggningClient = WebResourceFactory.newResource(
             HandlaggningControllerApi.class,
-            client.target(this.kundbehovsflodeBaseUrl));
+            client.target(this.handlaggningBaseUrl));
    }
 
-   public HandlaggningResponse getKundbehovsflodeInfo(HandlaggningRequest handlaggningRequest)
+   public HandlaggningResponse getHandlaggningInfo(HandlaggningRequest handlaggningRequest)
    {
-      var apiResponse = kundbehovsClient.getHandlaggning(handlaggningRequest.kundbehovsflodeId());
+      var apiResponse = handlaggningClient.getHandlaggning(handlaggningRequest.handlaggningId());
       return handlaggningMapper.toHandlaggningResponse(apiResponse);
    }
 
-   public void putKundbehovsflode(PutHandlaggningUppgiftRequest request)
+   public void putHandlaggning(PutHandlaggningUppgiftRequest request)
    {
       var apiRequest = handlaggningMapper.toPutHandlaggningRequest(request);
-      LOGGER.info("putKundbehovsflode " + request);
+      LOGGER.info("putHandlaggning " + request);
       try
       {
-         kundbehovsClient.putHandlaggning(request.kundbehovsflodeId(), apiRequest);
+         handlaggningClient.putHandlaggning(request.handlaggningId(), apiRequest);
       }
       catch (Throwable t)
       {
          t.printStackTrace();
          throw t;
       }
-      LOGGER.info("putKundbehovsflode executed");
+      LOGGER.info("putHandlaggning executed");
    }
 
-   public void patchKundbehovsflode(PatchErsattningRequest request)
+   public void patchHandlaggning(PatchErsattningRequest request)
    {
       var apiRequest = handlaggningMapper.toPatchHandlaggningRequest(request);
-      LOGGER.info("patchKundbehovsflode " + request);
+      LOGGER.info("patchHandlaggning " + request);
       try
       {
-         kundbehovsClient.patchHandlaggning(request.kundbehovsflodeId(), apiRequest);
+         handlaggningClient.patchHandlaggning(request.handlaggningId(), apiRequest);
       }
       catch (Throwable t)
       {
          t.printStackTrace();
          throw t;
       }
-      LOGGER.info("patchKundbehovsflode executed");
+      LOGGER.info("patchHandlaggning executed");
    }
 }
