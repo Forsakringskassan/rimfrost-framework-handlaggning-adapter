@@ -2,6 +2,12 @@
 
 Changelog of rimfrost-framework-kundbehovsflode-adapter.
 
+## 0.1.3 (2026-03-03)
+
+### Bug Fixes
+
+-  Rename kundbehovsflode to handlaggning ([e90aa](https://github.com/Forsakringskassan/rimfrost-framework-kundbehovsflode-adapter/commit/e90aa71bc7eb7d2) Lars Persson)  
+
 ## 0.1.2 (2026-02-24)
 
 ### Bug Fixes
