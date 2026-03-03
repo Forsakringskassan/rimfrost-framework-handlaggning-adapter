@@ -1,4 +1,4 @@
-package se.fk.rimfrost.framework.kundbehovsflode.adapter.dto;
+package se.fk.rimfrost.framework.handlaggning.adapter.dto;
 
 import jakarta.annotation.Nullable;
 import org.immutables.value.Value;
@@ -6,7 +6,7 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Value.Immutable
-public interface UpdateKundbehovsflodeUppgift
+public interface UpdateHandlaggningUppgift
 {
    UUID id();
 
@@ -29,5 +29,5 @@ public interface UpdateKundbehovsflodeUppgift
 
    FSSAinformation fsSAinformation();
 
-   UpdateKundbehovsflodeSpecifikation specifikation();
+   UpdateHandlaggningSpecifikation specifikation();
 }

@@ -1,4 +1,4 @@
-package se.fk.rimfrost.framework.kundbehovsflode.adapter.dto;
+package se.fk.rimfrost.framework.handlaggning.adapter.dto;
 
 import org.immutables.value.Value;
 import java.util.List;
@@ -9,6 +9,6 @@ public interface PatchErsattningRequest
 {
    UUID kundbehovsflodeId();
 
-   List<UpdateKundbehovsflodeErsattning> ersattningar();
+   List<UpdateHandlaggningErsattning> ersattningar();
 
 }

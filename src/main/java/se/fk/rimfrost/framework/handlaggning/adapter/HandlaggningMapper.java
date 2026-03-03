@@ -1,7 +1,12 @@
-package se.fk.rimfrost.framework.kundbehovsflode.adapter;
+package se.fk.rimfrost.framework.handlaggning.adapter;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import se.fk.rimfrost.framework.kundbehovsflode.adapter.dto.*;
+import se.fk.rimfrost.framework.handlaggning.adapter.dto.HandlaggningResponse;
+import se.fk.rimfrost.framework.handlaggning.adapter.dto.ImmutableErsattning;
+import se.fk.rimfrost.framework.handlaggning.adapter.dto.ImmutableHandlaggningResponse;
+import se.fk.rimfrost.framework.handlaggning.adapter.dto.PatchErsattningRequest;
+import se.fk.rimfrost.framework.handlaggning.adapter.dto.PutHandlaggningUppgiftRequest;
+import se.fk.rimfrost.framework.handlaggning.adapter.dto.*;
 import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.*;
 import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Beslutsutfall;
 import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.FSSAinformation;
@@ -13,16 +18,16 @@ import java.util.List;
 import static se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.UppgiftStatus.*;
 
 @ApplicationScoped
-public class KundbehovsflodeMapper
+public class HandlaggningMapper
 {
-   public KundbehovsflodeResponse toKundbehovsflodeResponse(GetKundbehovsflodeResponse apiResponse)
+   public HandlaggningResponse toHandlaggningResponse(GetHandlaggningResponse apiResponse)
    {
-      var responseBuilder = ImmutableKundbehovsflodeResponse.builder()
-            .personnummer(apiResponse.getKundbehovsflode().getKundbehov().getKundbehovsroll().getFirst().getIndivid().getId())
-            .formanstyp(apiResponse.getKundbehovsflode().getKundbehov().getFormanstyp())
-            .kundbehovsflodeId(apiResponse.getKundbehovsflode().getId());
+      var responseBuilder = ImmutableHandlaggningResponse.builder()
+            .personnummer(apiResponse.getHandlaggning().getYrkande().getYrkanderoll().getFirst().getIndivid().getId())
+            .formanstyp(apiResponse.getHandlaggning().getYrkande().getFormanstyp())
+            .handlaggningId(apiResponse.getHandlaggning().getId());
 
-      for (var ersattning : apiResponse.getKundbehovsflode().getKundbehov().getErsattning())
+      for (var ersattning : apiResponse.getHandlaggning().getYrkande().getErsattning())
       {
          responseBuilder.addErsattning(ImmutableErsattning.builder()
                .belopp(ersattning.getBelopp())
@@ -38,7 +43,7 @@ public class KundbehovsflodeMapper
       return responseBuilder.build();
    }
 
-   public PutKundbehovsflodeRequest toPutKundbehovsflodeRequest(PutKundbehovsflodeUppgiftRequest request)
+   public PutHandlaggningRequest toPutHandlaggningRequest(PutHandlaggningUppgiftRequest request)
    {
       var lagrum = new Lagrum();
       lagrum.setId(request.uppgift().specifikation().regel().lagrum().id());
@@ -80,7 +85,7 @@ public class KundbehovsflodeMapper
 
       var uppgift = new Uppgift();
       uppgift.setId(request.uppgift().id());
-      uppgift.setKundbehovsflodeId(request.kundbehovsflodeId());
+      uppgift.setHandlaggningId(request.kundbehovsflodeId());
       uppgift.setFsSAinformation(mapFssaInformation(request.uppgift().fsSAinformation()));
       uppgift.setSkapadTs(request.uppgift().skapadTs());
       uppgift.setUtfordTs(request.uppgift().utfordTs());
@@ -90,12 +95,12 @@ public class KundbehovsflodeMapper
       uppgift.setUppgiftspecifikation(uppgiftspecifikation);
       uppgift.setUnderlag(underlagList);
 
-      var putRequest = new PutKundbehovsflodeRequest();
+      var putRequest = new PutHandlaggningRequest();
       putRequest.setUppgift(uppgift);
       return putRequest;
    }
 
-   public List<UpdateErsattning> toPatchKundbehovsflodeRequest(PatchErsattningRequest request)
+   public List<UpdateErsattning> toPatchHandlaggningRequest(PatchErsattningRequest request)
    {
       var updateErsattningList = new ArrayList<UpdateErsattning>();
       for (var ersattning : request.ersattningar())
@@ -109,7 +114,7 @@ public class KundbehovsflodeMapper
       return updateErsattningList;
    }
 
-   private Beslutsutfall mapBeslutsutfall(se.fk.rimfrost.framework.kundbehovsflode.adapter.dto.Beslutsutfall beslutsutfall) {
+   private Beslutsutfall mapBeslutsutfall(se.fk.rimfrost.framework.handlaggning.adapter.dto.Beslutsutfall beslutsutfall) {
         return switch (beslutsutfall) {
             case JA -> Beslutsutfall.JA;
             case NEJ -> Beslutsutfall.NEJ;
@@ -119,7 +124,7 @@ public class KundbehovsflodeMapper
     }
 
    private FSSAinformation mapFssaInformation(
-            se.fk.rimfrost.framework.kundbehovsflode.adapter.dto.FSSAinformation fsSAinformation) {
+            se.fk.rimfrost.framework.handlaggning.adapter.dto.FSSAinformation fsSAinformation) {
         return switch (fsSAinformation) {
             case HANDLAGGNING_PAGAR -> FSSAinformation.HANDLAGGNING_PAGAR;
             case VANTAR_PA_INFO_FRAN_ANNAN_PART -> FSSAinformation.VANTAR_PA_INFO_FRAN_ANNAN_PART;
@@ -129,7 +134,7 @@ public class KundbehovsflodeMapper
     }
 
    private Verksamhetslogik mapVerksamhetslogik(
-            se.fk.rimfrost.framework.kundbehovsflode.adapter.dto.Verksamhetslogik verksamhetslogik) {
+            se.fk.rimfrost.framework.handlaggning.adapter.dto.Verksamhetslogik verksamhetslogik) {
         return switch (verksamhetslogik) {
             case A -> Verksamhetslogik.A;
             case B -> Verksamhetslogik.B;
@@ -138,7 +143,7 @@ public class KundbehovsflodeMapper
         };
     }
 
-   private Roll mapRoll(se.fk.rimfrost.framework.kundbehovsflode.adapter.dto.Roll roll) {
+   private Roll mapRoll(se.fk.rimfrost.framework.handlaggning.adapter.dto.Roll roll) {
         return switch (roll) {
             case AGARE -> Roll.AGARE;
             case ANSVARIG_HANDLAGGARE -> Roll.ANSVARIG_HANDLAGGARE;
@@ -147,7 +152,7 @@ public class KundbehovsflodeMapper
         };
     }
 
-   private UppgiftStatus mapUppgiftStatus(se.fk.rimfrost.framework.kundbehovsflode.adapter.dto.UppgiftStatus uppgiftStatus) {
+   private UppgiftStatus mapUppgiftStatus(se.fk.rimfrost.framework.handlaggning.adapter.dto.UppgiftStatus uppgiftStatus) {
         return switch (uppgiftStatus) {
             case TILLDELAD -> TILLDELAD;
             case AVSLUTAD -> AVSLUTAD;

@@ -1,4 +1,4 @@
-package se.fk.rimfrost.framework.kundbehovsflode.adapter.dto;
+package se.fk.rimfrost.framework.handlaggning.adapter.dto;
 
 public enum FSSAinformation
 {
