@@ -1,9 +1,9 @@
-package se.fk.rimfrost.framework.kundbehovsflode.adapter.dto;
+package se.fk.rimfrost.framework.handlaggning.adapter.dto;
 
 import org.immutables.value.Value;
 
 @Value.Immutable
-public interface UpdateKundbehovsflodeUnderlag
+public interface UpdateHandlaggningUnderlag
 {
 
    String typ();

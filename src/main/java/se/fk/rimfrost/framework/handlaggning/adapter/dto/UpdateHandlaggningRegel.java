@@ -1,10 +1,10 @@
-package se.fk.rimfrost.framework.kundbehovsflode.adapter.dto;
+package se.fk.rimfrost.framework.handlaggning.adapter.dto;
 
 import org.immutables.value.Value;
 import java.util.UUID;
 
 @Value.Immutable
-public interface UpdateKundbehovsflodeRegel
+public interface UpdateHandlaggningRegel
 {
 
    UUID id();
@@ -15,6 +15,6 @@ public interface UpdateKundbehovsflodeRegel
 
    String beskrivning();
 
-   UpdateKundbehovsflodeLagrum lagrum();
+   UpdateHandlaggningLagrum lagrum();
 
 }
