@@ -2,6 +2,12 @@
 
 Changelog of rimfrost-framework-handlaggning-adapter.
 
+## 0.1.7 (2026-03-10)
+
+### Bug Fixes
+
+-  uppdatering av yrkanderoll ([4de59](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/4de59cb5e6cbc4b) Ulf Slunga)  
+
 ## 0.1.6 (2026-03-06)
 
 ### Bug Fixes
