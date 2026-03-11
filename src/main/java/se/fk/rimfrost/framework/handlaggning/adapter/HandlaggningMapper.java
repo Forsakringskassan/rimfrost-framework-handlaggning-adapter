@@ -1,7 +1,6 @@
 package se.fk.rimfrost.framework.handlaggning.adapter;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import se.fk.rimfrost.framework.handlaggning.adapter.dto.Ersattningstatus;
 import se.fk.rimfrost.framework.handlaggning.adapter.dto.HandlaggningResponse;
 import se.fk.rimfrost.framework.handlaggning.adapter.dto.ImmutableErsattning;
 import se.fk.rimfrost.framework.handlaggning.adapter.dto.ImmutableHandlaggningResponse;
@@ -111,23 +110,33 @@ public class HandlaggningMapper
       return updateErsattningList;
    }
 
-   private Ersattningsstatus mapErsattningstatus(se.fk.rimfrost.framework.handlaggning.adapter.dto.Ersattningstatus ersattningstatus) {
-            return switch (ersattningstatus) {
+   private Ersattningsstatus mapErsattningstatus(se.fk.rimfrost.framework.handlaggning.adapter.dto.Ersattningstatus ersattningstatus)
+   {
+        if(ersattningstatus == null){
+            return null;
+        }
+
+        return switch (ersattningstatus) {
             case FASTSTALLT -> Ersattningsstatus.FASTSTALLT;
             case FASTSTALLT_UNDER_UTREDNING -> Ersattningsstatus.FASTSTALLT_UNDER_UTREDNING;
             case PLANERAT -> Ersattningsstatus.PLANERAT;
             case UNDER_UTREDNING -> Ersattningsstatus.UNDER_UTREDNING;
             case YRKAT -> Ersattningsstatus.YRKAT;
-            default -> null;
+            default -> throw new InternalError("Could not map Ersattningstatus: " + ersattningstatus);
         };
-}
+    }
 
-   private Beslutsutfall mapBeslutsutfall(se.fk.rimfrost.framework.handlaggning.adapter.dto.Beslutsutfall beslutsutfall) {
+   private Beslutsutfall mapBeslutsutfall(se.fk.rimfrost.framework.handlaggning.adapter.dto.Beslutsutfall beslutsutfall)
+    {
+        if(beslutsutfall == null){
+            return null;
+        }
+
         return switch (beslutsutfall) {
             case JA -> Beslutsutfall.JA;
             case NEJ -> Beslutsutfall.NEJ;
             case FU -> Beslutsutfall.FU;
-            default -> null;
+            default -> throw new InternalError("Could not map Beslutsutfall: " + beslutsutfall);
         };
     }
 
