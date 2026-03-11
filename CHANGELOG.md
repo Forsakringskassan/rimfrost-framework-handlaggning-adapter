@@ -2,6 +2,12 @@
 
 Changelog of rimfrost-framework-handlaggning-adapter.
 
+## 0.1.8 (2026-03-11)
+
+### Bug Fixes
+
+-  nullpointer in mapping enums that are nullable ([ac9cb](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/ac9cbed1c78e847) Nils Elveros)  
+
 ## 0.1.7 (2026-03-10)
 
 ### Bug Fixes
