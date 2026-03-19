@@ -79,8 +79,7 @@ public class HandlaggningMapper
       apiYrkande.setVersion(yrkande.version());
       apiYrkande.setErbjudandeId(yrkande.erbjudandeId());
       apiYrkande.setYrkandedatum(yrkande.yrkandeFrom());
-      apiYrkande.setYrkandestatus(
-            se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Yrkandestatus.valueOf(yrkande.yrkandeStatus()));
+      apiYrkande.setYrkandestatus(toApiYrkandeStatus(yrkande.yrkandeStatus()));
       apiYrkande.setYrkandeFrom(yrkande.yrkandeFrom());
       apiYrkande.setYrkandeTom(yrkande.yrkandeTom());
       apiYrkande.setAvsikt(Avsiktstyp.valueOf(yrkande.avsikt()));
@@ -98,7 +97,7 @@ public class HandlaggningMapper
             .version(apiYrkande.getVersion())
             .erbjudandeId(apiYrkande.getErbjudandeId())
             .yrkandeDatum(apiYrkande.getYrkandedatum())
-            .yrkandeStatus(String.valueOf(apiYrkande.getYrkandestatus()))
+            .yrkandeStatus(toYrkandeStatus(apiYrkande.getYrkandestatus()))
             .yrkandeFrom(apiYrkande.getYrkandeFrom())
             .yrkandeTom(apiYrkande.getYrkandeTom())
             .avsikt(String.valueOf(apiYrkande.getAvsikt()))

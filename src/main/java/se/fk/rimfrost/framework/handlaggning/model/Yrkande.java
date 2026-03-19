@@ -17,7 +17,7 @@ public interface Yrkande
 
    OffsetDateTime yrkandeDatum();
 
-   String yrkandeStatus();
+   Yrkandestatus yrkandeStatus();
 
    OffsetDateTime yrkandeFrom();
 
