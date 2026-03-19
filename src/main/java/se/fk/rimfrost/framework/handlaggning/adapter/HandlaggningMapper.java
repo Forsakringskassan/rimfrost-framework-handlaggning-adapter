@@ -126,6 +126,8 @@ public class HandlaggningMapper
                   .version(a.getVersion())
                   .resultatFrom(a.getFrom())
                   .resultatTom(a.getTom())
+                  .yrkandeStatus(toYrkandeStatus(a.getYrkandestatus()))
+                  .avslagsanledning(a.getAvslagsanledning())
                   .typ(a.getTyp())
                   .data(a.getData())
                   .build())
