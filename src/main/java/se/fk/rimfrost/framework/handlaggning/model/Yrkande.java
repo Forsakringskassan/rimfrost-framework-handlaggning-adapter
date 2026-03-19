@@ -17,7 +17,7 @@ public interface Yrkande
 
    OffsetDateTime yrkandeDatum();
 
-   String yrkandeStatus();
+   Yrkandestatus yrkandeStatus();
 
    OffsetDateTime yrkandeFrom();
 
@@ -35,22 +35,6 @@ public interface Yrkande
       UUID individId();
 
       UUID yrkandeRollId();
-   }
-
-   @Value.Immutable
-   public interface ProduceratResultat
-   {
-      UUID id();
-
-      int version();
-
-      OffsetDateTime resultatFrom();
-
-      OffsetDateTime resultatTom();
-
-      String typ();
-
-      String data();
    }
 
 }
