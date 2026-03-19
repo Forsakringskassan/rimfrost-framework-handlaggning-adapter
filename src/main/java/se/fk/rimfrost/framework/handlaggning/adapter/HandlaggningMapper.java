@@ -198,6 +198,8 @@ public class HandlaggningMapper
       apiUppgift.setUtforarId(uppgift.utforarId());
       apiUppgift.setAktivitetId(uppgift.aktivitetId());
       apiUppgift.setUppgiftspecifikation(toApiUppgiftSpecifikation(uppgift.uppgiftSpecifikation()));
+      apiUppgift.setUppgiftStatus(toApiUppgiftStatus(uppgift.uppgiftStatus()));
+      apiUppgift.setFsSAinformation(toApiFSSAinformation(uppgift.fSSAinformation()));
       return apiUppgift;
    }
 
