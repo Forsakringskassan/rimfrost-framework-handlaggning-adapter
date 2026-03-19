@@ -1,5 +1,6 @@
 package se.fk.rimfrost.framework.handlaggning.model;
 
+import jakarta.annotation.Nullable;
 import org.immutables.value.Value;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -19,6 +20,7 @@ public interface Handlaggning
 
    OffsetDateTime skapadTS();
 
+   @Nullable
    OffsetDateTime avslutadTS();
 
    UUID handlaggningspecifikationId();
