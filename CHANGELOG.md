@@ -2,6 +2,12 @@
 
 Changelog of rimfrost-framework-handlaggning-adapter.
 
+## 0.1.13 (2026-03-25)
+
+### Bug Fixes
+
+-  renaming Handlaggning HandlaggningUpdate ([09277](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/092770bc3958eb4) Ulf Slunga)  
+
 ## 0.1.12 (2026-03-19)
 
 ### Bug Fixes
