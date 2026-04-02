@@ -192,8 +192,7 @@ public class HandlaggningMapper
    // to API
    //
 
-   public PostHandlaggningRequest toPostHandlaggningRequest(UUID yrkandeId, UUID processInstansId,
-         UUID handlaggningspecifikationId)
+   public PostHandlaggningRequest toPostHandlaggningRequest(UUID yrkandeId, UUID handlaggningspecifikationId)
    {
       var postHandlaggningRequest = new PostHandlaggningRequest();
       postHandlaggningRequest.setYrkandeId(yrkandeId);
