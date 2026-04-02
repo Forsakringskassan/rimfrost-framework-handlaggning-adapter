@@ -1,6 +1,7 @@
 package se.fk.rimfrost.framework.handlaggning.model;
 
 import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.Null;
 import org.immutables.value.Value;
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -15,6 +16,7 @@ public interface Handlaggning
 
    Yrkande yrkande();
 
+   @Nullable
    UUID processInstansId();
 
    OffsetDateTime skapadTS();
