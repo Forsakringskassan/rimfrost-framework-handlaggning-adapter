@@ -2,6 +2,13 @@
 
 Changelog of rimfrost-framework-handlaggning-adapter.
 
+## 0.1.16 (2026-04-02)
+
+### Bug Fixes
+
+-  tar bort processInstansId från toPostHandlaggningRequest ([13c14](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/13c14f13f554a06) Ulf Slunga)  
+-  lägger till producerade resultat till beslutsrad. tar bort processInstansId från ny handläggning. ([34f11](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/34f11a916f101cb) Ulf Slunga)  
+
 ## 0.1.15 (2026-04-01)
 
 ### Bug Fixes
