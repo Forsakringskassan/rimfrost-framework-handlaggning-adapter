@@ -2,6 +2,12 @@
 
 Changelog of rimfrost-framework-handlaggning-adapter.
 
+## 0.1.18 (2026-04-08)
+
+### Bug Fixes
+
+-  Use IDs for referensdata parameters ([9e074](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/9e074ffdd8947c4) Lars Persson)  
+
 ## 0.1.17 (2026-04-02)
 
 ### Bug Fixes
