@@ -55,19 +55,23 @@ public class HandlaggningAdapter
       }
       catch (BadRequestException e)
       {
-         throw new HandlaggningException(HandlaggningException.ErrorType.BAD_REQUEST,"Felaktig förfrågan vid skapande av yrkande", e);
+         throw new HandlaggningException(HandlaggningException.ErrorType.BAD_REQUEST,
+               "Felaktig förfrågan vid skapande av yrkande", e);
       }
       catch (ProcessingException e)
       {
-         throw new HandlaggningException(HandlaggningException.ErrorType.SERVICE_UNAVAILABLE,"Kunde inte nå handläggningsservice", e);
+         throw new HandlaggningException(HandlaggningException.ErrorType.SERVICE_UNAVAILABLE,
+               "Kunde inte nå handläggningsservice", e);
       }
       catch (WebApplicationException e)
       {
-         throw new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR, "Oväntat fel vid skapande av yrkande, status: " + e.getResponse().getStatus(), e);
+         throw new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR,
+               "Oväntat fel vid skapande av yrkande, status: " + e.getResponse().getStatus(), e);
       }
    }
 
-   public Handlaggning createHandlaggning(UUID yrkandeId, UUID processinstansId, UUID handlaggningspecifikationId) throws HandlaggningException
+   public Handlaggning createHandlaggning(UUID yrkandeId, UUID processinstansId, UUID handlaggningspecifikationId)
+         throws HandlaggningException
    {
       try
       {
@@ -77,15 +81,19 @@ public class HandlaggningAdapter
       }
       catch (BadRequestException e)
       {
-         throw new HandlaggningException(HandlaggningException.ErrorType.BAD_REQUEST, "Felaktig förfrågan vid skapande av handläggning för yrkande: " + yrkandeId, e);
+         throw new HandlaggningException(HandlaggningException.ErrorType.BAD_REQUEST,
+               "Felaktig förfrågan vid skapande av handläggning för yrkande: " + yrkandeId, e);
       }
       catch (ProcessingException e)
       {
-         throw new HandlaggningException(HandlaggningException.ErrorType.SERVICE_UNAVAILABLE, "Kunde inte nå handläggningsservice vid skapande av handläggning", e);
+         throw new HandlaggningException(HandlaggningException.ErrorType.SERVICE_UNAVAILABLE,
+               "Kunde inte nå handläggningsservice vid skapande av handläggning", e);
       }
       catch (WebApplicationException e)
       {
-         throw new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR, "Oväntat fel vid skapande av handläggning för yrkande: " + yrkandeId + ", status: " + e.getResponse().getStatus(), e);
+         throw new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR,
+               "Oväntat fel vid skapande av handläggning för yrkande: " + yrkandeId + ", status: " + e.getResponse().getStatus(),
+               e);
       }
    }
 
@@ -98,19 +106,24 @@ public class HandlaggningAdapter
       }
       catch (NotFoundException e)
       {
-         throw new HandlaggningException(HandlaggningException.ErrorType.NOT_FOUND, "Hittade ingen handläggning med id: " + handlaggningId, e);
+         throw new HandlaggningException(HandlaggningException.ErrorType.NOT_FOUND,
+               "Hittade ingen handläggning med id: " + handlaggningId, e);
       }
       catch (BadRequestException e)
       {
-         throw new HandlaggningException(HandlaggningException.ErrorType.BAD_REQUEST, "Felaktig förfrågan vid hämtning av handläggning med id: " + handlaggningId, e);
+         throw new HandlaggningException(HandlaggningException.ErrorType.BAD_REQUEST,
+               "Felaktig förfrågan vid hämtning av handläggning med id: " + handlaggningId, e);
       }
       catch (ProcessingException e)
       {
-         throw new HandlaggningException(HandlaggningException.ErrorType.SERVICE_UNAVAILABLE, "Kunde inte nå handläggningstjänsten vid hämtning av handläggning", e);
+         throw new HandlaggningException(HandlaggningException.ErrorType.SERVICE_UNAVAILABLE,
+               "Kunde inte nå handläggningstjänsten vid hämtning av handläggning", e);
       }
       catch (WebApplicationException e)
       {
-         throw new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR, "Oväntat fel vid hämtning av handläggning med id: " + handlaggningId + ", status: " + e.getResponse().getStatus(), e);
+         throw new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR,
+               "Oväntat fel vid hämtning av handläggning med id: " + handlaggningId + ", status: " + e.getResponse().getStatus(),
+               e);
       }
    }
 
@@ -124,19 +137,25 @@ public class HandlaggningAdapter
       }
       catch (NotFoundException e)
       {
-         throw new HandlaggningException(HandlaggningException.ErrorType.NOT_FOUND, "Ingen handläggning hittades med id: " + handlaggningUpdate.id(), e);
+         throw new HandlaggningException(HandlaggningException.ErrorType.NOT_FOUND,
+               "Ingen handläggning hittades med id: " + handlaggningUpdate.id(), e);
       }
       catch (BadRequestException e)
       {
-         throw new HandlaggningException(HandlaggningException.ErrorType.BAD_REQUEST, "Felaktig förfrågan vid uppdatering av handläggning med id: " + handlaggningUpdate.id(), e);
+         throw new HandlaggningException(HandlaggningException.ErrorType.BAD_REQUEST,
+               "Felaktig förfrågan vid uppdatering av handläggning med id: " + handlaggningUpdate.id(), e);
       }
       catch (ProcessingException e)
       {
-         throw new HandlaggningException(HandlaggningException.ErrorType.SERVICE_UNAVAILABLE, "Kunde inte nå handläggningstjänsten vid uppdatering av handläggning", e);
+         throw new HandlaggningException(HandlaggningException.ErrorType.SERVICE_UNAVAILABLE,
+               "Kunde inte nå handläggningstjänsten vid uppdatering av handläggning", e);
       }
       catch (WebApplicationException e)
       {
-         throw new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR, "Oväntat fel vid uppdatering av handläggning med id: " + handlaggningUpdate.id() + ", status: " + e.getResponse().getStatus(), e);
+         throw new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR,
+               "Oväntat fel vid uppdatering av handläggning med id: " + handlaggningUpdate.id() + ", status: "
+                     + e.getResponse().getStatus(),
+               e);
       }
    }
 
