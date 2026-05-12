@@ -24,6 +24,7 @@ public interface Uppgift
    @Nullable
    Idtyp utforarId();
 
+   @Nullable
    String uppgiftStatus();
 
    UUID aktivitetId();
