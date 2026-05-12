@@ -2,6 +2,13 @@
 
 Changelog of rimfrost-framework-handlaggning-adapter.
 
+## 1.0.2 (2026-05-12)
+
+### Bug Fixes
+
+-  Allow null for uppgiftStatus field ([74bea](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/74beab3246df77d) Lars Persson)  
+-  Bump rimfrost-service-handlaggning-openapi version ([2b4c2](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/2b4c25ca24b116c) Lars Persson)  
+
 ## 1.0.1 (2026-05-04)
 
 ### Bug Fixes
