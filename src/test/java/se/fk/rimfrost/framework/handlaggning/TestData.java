@@ -6,8 +6,12 @@ import se.fk.rimfrost.framework.handlaggning.model.Idtyp;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableHandlaggning;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableHandlaggningUpdate;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableIdtyp;
+import se.fk.rimfrost.framework.handlaggning.model.Beslut;
+import se.fk.rimfrost.framework.handlaggning.model.ImmutableBeslut;
+import se.fk.rimfrost.framework.handlaggning.model.ImmutableBeslutsrad;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableIndividYrkandeRoll;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableProduceratResultat;
+import se.fk.rimfrost.framework.handlaggning.model.ImmutableProduceratResultatRef;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableUnderlag;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableUppgift;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableUppgiftSpecifikation;
@@ -49,6 +53,36 @@ public class TestData
             .yrkandeStatus("NY")
             .typ("ersattning")
             .data("{}")
+            .build();
+   }
+
+   public static Beslut createBeslut()
+   {
+      var beslutsfattare = ImmutableIdtyp.builder()
+            .typId("ec00ec43-ed93-4e71-b533-88e74417fc53")
+            .varde("91234567-89ab-4cde-9012-3456789abcde")
+            .build();
+
+      var resultatRef = ImmutableProduceratResultatRef.builder()
+            .id(UUID.fromString("cf188fb1-f217-42e5-b22b-2ff758c79e76"))
+            .version(1)
+            .build();
+
+      var beslutsrad = ImmutableBeslutsrad.builder()
+            .id(UUID.fromString("a1b2c3d4-0000-0000-0000-000000000012"))
+            .version(1)
+            .beslutsTyp("e44d5e15-5231-4857-b992-5b8d9c34e36f")
+            .beslutsUtfall("f011934d-d05e-404d-95ab-24571eec241b")
+            .avslutsTyp("b1364919-6002-4e37-a759-556bd2ec4bfd")
+            .addProduceradeResultatRef(resultatRef)
+            .build();
+
+      return ImmutableBeslut.builder()
+            .id(UUID.fromString("a1b2c3d4-0000-0000-0000-000000000011"))
+            .version(1)
+            .datum(OffsetDateTime.parse("2026-04-23T10:15:55+00"))
+            .beslutsfattare(beslutsfattare)
+            .addBeslutsrader(beslutsrad)
             .build();
    }
 
