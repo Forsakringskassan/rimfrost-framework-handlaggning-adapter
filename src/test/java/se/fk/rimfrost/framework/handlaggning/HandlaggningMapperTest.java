@@ -19,7 +19,7 @@ import static se.fk.rimfrost.framework.handlaggning.TestData.createModelHandlagg
 import static se.fk.rimfrost.framework.handlaggning.TestData.createModelYrkande;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createProduceratResultat;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createUnderlag;
-import static se.fk.rimfrost.framework.handlaggning.TestData.createUppgift;
+import static se.fk.rimfrost.framework.handlaggning.TestData.createUpgift;
 import static se.fk.rimfrost.framework.handlaggning.TestUtils.toApiHandlaggning;
 import static se.fk.rimfrost.framework.handlaggning.TestUtils.toApiHandlaggningUpdate;
 import static se.fk.rimfrost.framework.handlaggning.TestUtils.toApiPostYrkandeRequest;
@@ -207,7 +207,7 @@ public class HandlaggningMapperTest
    public void should_create_correct_api_handlaggning_update_uppgift_utford_ts_null()
    {
       var uppgift = ImmutableUppgift.builder()
-            .from(createUppgift())
+            .from(createUpgift())
             .utfordTs(null)
             .build();
 
