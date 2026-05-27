@@ -6,7 +6,7 @@
   <parent>
     <groupId>se.fk.maven</groupId>
     <artifactId>fk-maven-parent</artifactId>
-    <version>1.11.1</version>
+    <version>1.12.0</version>
   </parent>
   <groupId>se.fk.rimfrost.framework.handlaggning</groupId>
   <artifactId>rimfrost-framework-handlaggning-adapter</artifactId>
@@ -21,6 +21,10 @@
       <url>https://maven.pkg.github.com/Forsakringskassan/repository</url>
     </repository>
   </distributionManagement>
+
+  <properties>
+    <argLine></argLine>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -53,6 +57,18 @@
       <artifactId>jersey-apache-connector</artifactId>
       <version>3.1.11</version>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-junit5-component</artifactId>
+      <version>3.20.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wiremock</groupId>
+      <artifactId>wiremock</artifactId>
+      <version>3.13.2</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <repositories>
@@ -83,6 +99,23 @@
               <version>2.10.0</version>
             </path>
           </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>properties</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
         </configuration>
       </plugin>
     </plugins>

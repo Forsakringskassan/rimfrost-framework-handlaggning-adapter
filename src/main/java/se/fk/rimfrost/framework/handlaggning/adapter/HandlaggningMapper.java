@@ -131,7 +131,7 @@ public class HandlaggningMapper
       apiYrkande.setId(yrkande.id());
       apiYrkande.setVersion(yrkande.version());
       apiYrkande.setErbjudandeId(yrkande.erbjudandeId());
-      apiYrkande.setYrkandedatum(yrkande.yrkandeFrom());
+      apiYrkande.setYrkandedatum(yrkande.yrkandeDatum());
       apiYrkande.setYrkandestatus(yrkande.yrkandeStatus());
       apiYrkande.setYrkandeFrom(yrkande.yrkandeFrom());
       apiYrkande.setYrkandeTom(yrkande.yrkandeTom());
