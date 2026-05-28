@@ -152,7 +152,7 @@ public class HandlaggningMapper
 
    public Yrkande toYrkande(se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Yrkande apiYrkande)
    {
-      return ImmutableYrkande.builder()
+      var builder = ImmutableYrkande.builder()
             .id(apiYrkande.getId())
             .version(apiYrkande.getVersion())
             .erbjudandeId(apiYrkande.getErbjudandeId())
@@ -162,8 +162,49 @@ public class HandlaggningMapper
             .yrkandeTom(apiYrkande.getYrkandeTom())
             .avsikt(String.valueOf(apiYrkande.getAvsikt()))
             .individYrkandeRoller(toIndividYrkandeRoller(apiYrkande.getIndividYrkandeRoller()))
-            .produceradeResultat(toProduceradeResultat(apiYrkande.getProduceradeResultat()))
+            .produceradeResultat(toProduceradeResultat(apiYrkande.getProduceradeResultat()));
+
+      var apiBeslut = apiYrkande.getBeslut();
+      if (apiBeslut != null)
+      {
+         builder.beslut(toBeslut(apiBeslut));
+      }
+
+      return builder.build();
+   }
+
+   private Beslut toBeslut(se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Beslut apiBeslut)
+   {
+      return ImmutableBeslut.builder()
+            .id(apiBeslut.getId())
+            .version(apiBeslut.getVersion())
+            .datum(apiBeslut.getDatum())
+            .beslutsfattare(toIdtyp(apiBeslut.getBeslutsfattare()))
+            .beslutsrader(apiBeslut.getBeslutsrader().stream().map(this::toBeslutsrad).toList())
             .build();
+   }
+
+   private Beslutsrad toBeslutsrad(se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Beslutsrad apiBeslutsrad)
+   {
+      return ImmutableBeslutsrad.builder()
+            .id(apiBeslutsrad.getId())
+            .version(apiBeslutsrad.getVersion())
+            .beslutsTyp(apiBeslutsrad.getBeslutsTyp())
+            .beslutsUtfall(apiBeslutsrad.getBeslutsUtfall())
+            .avslutsTyp(apiBeslutsrad.getAvslutsTyp())
+            .produceradeResultatRef(toProduceradeResultatRef(apiBeslutsrad.getProduceradeResultatRef()))
+            .build();
+   }
+
+   private List<ProduceratResultatRef> toProduceradeResultatRef(
+         List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.ProduceratResultatRef> apiProduceradeResultatRef)
+   {
+      return apiProduceradeResultatRef.stream()
+            .map(a -> (ProduceratResultatRef) ImmutableProduceratResultatRef.builder()
+                  .id(a.getId())
+                  .version(a.getVersion())
+                  .build())
+            .toList();
    }
 
    private List<ImmutableIndividYrkandeRoll> toIndividYrkandeRoller(

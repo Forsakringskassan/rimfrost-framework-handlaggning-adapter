@@ -13,6 +13,7 @@ import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.PutHandlaggnin
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static se.fk.rimfrost.framework.handlaggning.TestData.createBeslut;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createIndividYrkandeRoll;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createModelHandlaggning;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createModelHandlaggningUpdate;
@@ -56,6 +57,17 @@ public class HandlaggningMapperTest
       var expectedYrkande = ImmutableYrkande.builder()
             .from(createModelYrkande())
             .addProduceradeResultat(createProduceratResultat())
+            .build();
+      var apiYrkande = toApiYrkande(expectedYrkande);
+      assertEquals(expectedYrkande, handlaggningMapper.toYrkande(apiYrkande));
+   }
+
+   @Test
+   public void should_create_correct_api_yrkande_with_beslut()
+   {
+      var expectedYrkande = ImmutableYrkande.builder()
+            .from(createModelYrkande())
+            .beslut(createBeslut())
             .build();
       var apiYrkande = toApiYrkande(expectedYrkande);
       assertEquals(expectedYrkande, handlaggningMapper.toYrkande(apiYrkande));
@@ -443,6 +455,22 @@ public class HandlaggningMapperTest
       var updatedYrkande = ImmutableYrkande.builder()
             .from(handlaggning.yrkande())
             .addProduceradeResultat(createProduceratResultat())
+            .build();
+      var updatedHandlaggning = ImmutableHandlaggning.builder()
+            .from(handlaggning)
+            .yrkande(updatedYrkande)
+            .build();
+
+      assertEquals(updatedHandlaggning, handlaggningMapper.toHandlaggning(toApiHandlaggning(updatedHandlaggning)));
+   }
+
+   @Test
+   public void should_create_correct_model_handlaggning_with_beslut()
+   {
+      var handlaggning = createModelHandlaggning();
+      var updatedYrkande = ImmutableYrkande.builder()
+            .from(handlaggning.yrkande())
+            .beslut(createBeslut())
             .build();
       var updatedHandlaggning = ImmutableHandlaggning.builder()
             .from(handlaggning)
