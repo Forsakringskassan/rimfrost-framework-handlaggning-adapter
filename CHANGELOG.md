@@ -2,6 +2,15 @@
 
 Changelog of rimfrost-framework-handlaggning-adapter.
 
+## 1.0.3 (2026-05-28)
+
+### Bug Fixes
+
+-  Remove unused imports from TestData ([7a18a](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/7a18ac89d2bfba7) Ulf Slunga)  
+-  set beslut and corresponding test ([da9e1](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/da9e1af716013c4) Ulf Slunga)  
+-  Add basic tests ([da46f](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/da46f538316622f) Lars Persson)  
+-  Add basic tests ([8fad2](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/8fad264c9879975) Lars Persson)  
+
 ## 1.0.2 (2026-05-12)
 
 ### Bug Fixes
