@@ -2,9 +2,11 @@ package se.fk.rimfrost.framework.handlaggning;
 
 import se.fk.rimfrost.framework.handlaggning.model.Beslut;
 import se.fk.rimfrost.framework.handlaggning.model.Beslutsrad;
+import se.fk.rimfrost.framework.handlaggning.model.CreateYrkandeRequest;
 import se.fk.rimfrost.framework.handlaggning.model.Handlaggning;
 import se.fk.rimfrost.framework.handlaggning.model.HandlaggningUpdate;
 import se.fk.rimfrost.framework.handlaggning.model.Idtyp;
+import se.fk.rimfrost.framework.handlaggning.model.IndividYrkandeRoll;
 import se.fk.rimfrost.framework.handlaggning.model.ProduceratResultat;
 import se.fk.rimfrost.framework.handlaggning.model.ProduceratResultatRef;
 import se.fk.rimfrost.framework.handlaggning.model.Underlag;
@@ -16,14 +18,17 @@ import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.PutHandlaggnin
 
 public class TestUtils
 {
-   public static PostYrkandeRequest toApiPostYrkandeRequest(Yrkande yrkande)
+   public static PostYrkandeRequest toApiPostYrkandeRequest(CreateYrkandeRequest yrkandeRequest)
    {
       PostYrkandeRequest request = new PostYrkandeRequest();
-      request.setErbjudandeId(yrkande.erbjudandeId());
-      request.setYrkandeFrom(yrkande.yrkandeFrom());
-      request.setYrkandeTom(yrkande.yrkandeTom());
-      request.setIndividYrkandeRoller(yrkande.individYrkandeRoller().stream().map(TestUtils::toApiIndividYrkandeRoll).toList());
-      request.setProduceradeResultat(yrkande.produceradeResultat().stream().map(TestUtils::toApiProduceratResultat).toList());
+      request.setErbjudandeId(yrkandeRequest.erbjudandeId());
+      request.setYrkandeFrom(yrkandeRequest.yrkandeFrom());
+      request.setYrkandeTom(yrkandeRequest.yrkandeTom());
+      request.setHandlaggningspecifikationId(yrkandeRequest.handlaggningspecifikationId());
+      request.setIndividYrkandeRoller(
+            yrkandeRequest.individYrkandeRoller().stream().map(TestUtils::toApiIndividYrkandeRoll).toList());
+      request.setProduceradeResultat(
+            yrkandeRequest.produceradeResultat().stream().map(TestUtils::toApiProduceratResultat).toList());
       return request;
    }
 
@@ -84,7 +89,7 @@ public class TestUtils
    }
 
    private static se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.IndividYrkandeRoll toApiIndividYrkandeRoll(
-         Yrkande.IndividYrkandeRoll modelIndividYrkandeRoll)
+         IndividYrkandeRoll modelIndividYrkandeRoll)
    {
       se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.IndividYrkandeRoll individYrkandeRoll = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.IndividYrkandeRoll();
       individYrkandeRoll.setIndivid(toApiIdTyp(modelIndividYrkandeRoll.individ()));

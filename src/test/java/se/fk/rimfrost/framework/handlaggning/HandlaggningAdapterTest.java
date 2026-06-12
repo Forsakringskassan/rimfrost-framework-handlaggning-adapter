@@ -20,9 +20,9 @@ import java.util.UUID;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static se.fk.rimfrost.framework.handlaggning.TestData.createModelCreateYrkandeRequest;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createModelHandlaggning;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createModelHandlaggningUpdate;
-import static se.fk.rimfrost.framework.handlaggning.TestData.createModelYrkande;
 import static se.fk.rimfrost.framework.handlaggning.TestUtils.toApiPutHandlaggningRequest;
 
 @QuarkusComponentTest
@@ -68,7 +68,8 @@ public class HandlaggningAdapterTest
    {
       server.stubFor(WireMock.post(WireMock.urlPathEqualTo("/yrkande"))
             .willReturn(WireMock.aResponse().withStatus(400)));
-      var exception = assertThrows(HandlaggningException.class, () -> handlaggningAdapter.createYrkande(createModelYrkande()));
+      var exception = assertThrows(HandlaggningException.class,
+            () -> handlaggningAdapter.createYrkande(createModelCreateYrkandeRequest()));
       assertEquals(HandlaggningException.ErrorType.BAD_REQUEST, exception.getErrorType());
    }
 
@@ -78,7 +79,8 @@ public class HandlaggningAdapterTest
    {
       server.stubFor(WireMock.post(WireMock.urlPathEqualTo("/yrkande"))
             .willReturn(WireMock.aResponse().withFault(Fault.CONNECTION_RESET_BY_PEER)));
-      var exception = assertThrows(HandlaggningException.class, () -> handlaggningAdapter.createYrkande(createModelYrkande()));
+      var exception = assertThrows(HandlaggningException.class,
+            () -> handlaggningAdapter.createYrkande(createModelCreateYrkandeRequest()));
       assertEquals(HandlaggningException.ErrorType.SERVICE_UNAVAILABLE, exception.getErrorType());
    }
 
@@ -87,7 +89,8 @@ public class HandlaggningAdapterTest
    {
       server.stubFor(WireMock.post(WireMock.urlPathEqualTo("/yrkande"))
             .willReturn(WireMock.aResponse().withStatus(500)));
-      var exception = assertThrows(HandlaggningException.class, () -> handlaggningAdapter.createYrkande(createModelYrkande()));
+      var exception = assertThrows(HandlaggningException.class,
+            () -> handlaggningAdapter.createYrkande(createModelCreateYrkandeRequest()));
       assertEquals(HandlaggningException.ErrorType.UNEXPECTED_ERROR, exception.getErrorType());
    }
 
@@ -97,68 +100,18 @@ public class HandlaggningAdapterTest
    {
       server.stubFor(WireMock.post(WireMock.urlPathEqualTo("/yrkande"))
             .willReturn(WireMock.aResponse().withStatus(200).withBody((String) null)));
-      var exception = assertThrows(HandlaggningException.class, () -> handlaggningAdapter.createYrkande(createModelYrkande()));
+      var exception = assertThrows(HandlaggningException.class,
+            () -> handlaggningAdapter.createYrkande(createModelCreateYrkandeRequest()));
       assertEquals(HandlaggningException.ErrorType.UNEXPECTED_ERROR, exception.getErrorType());
    }
 
    @Test
-   public void should_create_yrkande() throws HandlaggningException
+   public void should_create_yrkande_with_handlaggning() throws HandlaggningException
    {
-      var expectedYrkande = createModelYrkande();
-      Mockito.when(handlaggningMapper.toYrkande(Mockito.any())).thenReturn(expectedYrkande);
-      var yrkande = handlaggningAdapter.createYrkande(expectedYrkande);
-      assertEquals(expectedYrkande, yrkande);
-   }
-
-   @Test
-   public void should_throw_with_error_type_bad_request_on_status_400_during_create_handlaggning() throws HandlaggningException
-   {
-      server.stubFor(WireMock.post(WireMock.urlPathEqualTo("/handlaggning"))
-            .willReturn(WireMock.aResponse().withStatus(400)));
-      var exception = assertThrows(HandlaggningException.class,
-            () -> handlaggningAdapter.createHandlaggning(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID()));
-      assertEquals(HandlaggningException.ErrorType.BAD_REQUEST, exception.getErrorType());
-   }
-
-   @Test
-   public void should_throw_with_error_type_service_unavailable_on_connection_reset_during_create_handlaggning()
-         throws HandlaggningException
-   {
-      server.stubFor(WireMock.post(WireMock.urlPathEqualTo("/handlaggning"))
-            .willReturn(WireMock.aResponse().withFault(Fault.CONNECTION_RESET_BY_PEER)));
-      var exception = assertThrows(HandlaggningException.class,
-            () -> handlaggningAdapter.createHandlaggning(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID()));
-      assertEquals(HandlaggningException.ErrorType.SERVICE_UNAVAILABLE, exception.getErrorType());
-   }
-
-   @Test
-   public void should_throw_with_error_type_unexpected_error_on_status_500_during_create_handlaggning()
-         throws HandlaggningException
-   {
-      server.stubFor(WireMock.post(WireMock.urlPathEqualTo("/handlaggning"))
-            .willReturn(WireMock.aResponse().withStatus(500)));
-      var exception = assertThrows(HandlaggningException.class,
-            () -> handlaggningAdapter.createHandlaggning(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID()));
-      assertEquals(HandlaggningException.ErrorType.UNEXPECTED_ERROR, exception.getErrorType());
-   }
-
-   @Test
-   public void should_throw_with_error_type_unexpected_error_on_status_200_and_null_response_during_create_handlaggning()
-         throws HandlaggningException
-   {
-      server.stubFor(WireMock.post(WireMock.urlPathEqualTo("/handlaggning"))
-            .willReturn(WireMock.aResponse().withStatus(200).withBody((String) null)));
-      var exception = assertThrows(HandlaggningException.class,
-            () -> handlaggningAdapter.createHandlaggning(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID()));
-      assertEquals(HandlaggningException.ErrorType.UNEXPECTED_ERROR, exception.getErrorType());
-   }
-
-   @Test
-   public void should_create_handlaggning() throws HandlaggningException
-   {
-      var expectedHandlaggning = TestData.createModelHandlaggning();
+      var expectedHandlaggning = createModelHandlaggning();
+      var request = createModelCreateYrkandeRequest();
       Mockito.when(handlaggningMapper.toHandlaggning(Mockito.any())).thenReturn(expectedHandlaggning);
-      var handlaggning = handlaggningAdapter.createHandlaggning(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID());
+      var handlaggning = handlaggningAdapter.createYrkande(request);
       assertEquals(expectedHandlaggning, handlaggning);
    }
 

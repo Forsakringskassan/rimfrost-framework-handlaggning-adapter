@@ -14,12 +14,11 @@ import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.proxy.WebResourceFactory;
 import se.fk.rimfrost.framework.handlaggning.exception.HandlaggningException;
+import se.fk.rimfrost.framework.handlaggning.model.CreateYrkandeRequest;
 import se.fk.rimfrost.framework.handlaggning.model.Handlaggning;
 import se.fk.rimfrost.framework.handlaggning.model.HandlaggningUpdate;
-import se.fk.rimfrost.framework.handlaggning.model.Yrkande;
 import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.HandlaggningControllerApi;
 import java.util.UUID;
-import static io.quarkus.arc.impl.UncaughtExceptions.LOGGER;
 
 @SuppressWarnings("unused")
 @ApplicationScoped
@@ -45,11 +44,11 @@ public class HandlaggningAdapter
             client.target(this.handlaggningBaseUrl));
    }
 
-   public Yrkande createYrkande(Yrkande yrkande) throws HandlaggningException
+   public Handlaggning createYrkande(CreateYrkandeRequest request) throws HandlaggningException
    {
       try
       {
-         var postYrkandeRequest = handlaggningMapper.toPostYrkandeRequest(yrkande);
+         var postYrkandeRequest = handlaggningMapper.toPostYrkandeRequest(request);
          var postYrkandeResponse = handlaggningClient.postYrkande(postYrkandeRequest);
          if (postYrkandeResponse == null)
          {
@@ -57,7 +56,7 @@ public class HandlaggningAdapter
                   "Oväntat fel vid skapande av yrkande, response är null");
          }
 
-         return handlaggningMapper.toYrkande(postYrkandeResponse.getYrkande());
+         return handlaggningMapper.toHandlaggning(postYrkandeResponse.getHandlaggning());
       }
       catch (BadRequestException e)
       {
@@ -73,38 +72,6 @@ public class HandlaggningAdapter
       {
          throw new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR,
                "Oväntat fel vid skapande av yrkande, status: " + e.getResponse().getStatus(), e);
-      }
-   }
-
-   public Handlaggning createHandlaggning(UUID yrkandeId, UUID processinstansId, UUID handlaggningspecifikationId)
-         throws HandlaggningException
-   {
-      try
-      {
-         var postHandlaggningRequest = handlaggningMapper.toPostHandlaggningRequest(yrkandeId, handlaggningspecifikationId);
-         var postHandlaggningResponse = handlaggningClient.postHandlaggning(postHandlaggningRequest);
-         if (postHandlaggningResponse == null)
-         {
-            throw new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR,
-                  "Oväntat fel vid skapande av handläggning, response är null för yrkandeId: " + yrkandeId);
-         }
-         return handlaggningMapper.toHandlaggning(postHandlaggningResponse.getHandlaggning());
-      }
-      catch (BadRequestException e)
-      {
-         throw new HandlaggningException(HandlaggningException.ErrorType.BAD_REQUEST,
-               "Felaktig förfrågan vid skapande av handläggning för yrkande: " + yrkandeId, e);
-      }
-      catch (ProcessingException e)
-      {
-         throw new HandlaggningException(HandlaggningException.ErrorType.SERVICE_UNAVAILABLE,
-               "Kunde inte nå handläggningsservice vid skapande av handläggning", e);
-      }
-      catch (WebApplicationException e)
-      {
-         throw new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR,
-               "Oväntat fel vid skapande av handläggning för yrkande: " + yrkandeId + ", status: " + e.getResponse().getStatus(),
-               e);
       }
    }
 

@@ -4,17 +4,17 @@ import io.quarkus.test.component.QuarkusComponentTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 import se.fk.rimfrost.framework.handlaggning.adapter.HandlaggningMapper;
+import se.fk.rimfrost.framework.handlaggning.model.ImmutableCreateYrkandeRequest;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableHandlaggning;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableHandlaggningUpdate;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableUppgift;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableYrkande;
 import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.PutHandlaggningRequest;
 
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createBeslut;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createIndividYrkandeRoll;
+import static se.fk.rimfrost.framework.handlaggning.TestData.createModelCreateYrkandeRequest;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createModelHandlaggning;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createModelHandlaggningUpdate;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createModelYrkande;
@@ -87,41 +87,28 @@ public class HandlaggningMapperTest
    @Test
    public void should_create_correct_api_post_yrkande()
    {
-      var yrkande = createModelYrkande();
+      var yrkande = createModelCreateYrkandeRequest();
       assertEquals(toApiPostYrkandeRequest(yrkande), handlaggningMapper.toPostYrkandeRequest(yrkande));
    }
 
    @Test
    public void should_create_correct_api_post_yrkande_multiple_individ_roller()
    {
-      var yrkande = ImmutableYrkande.builder()
-            .from(createModelYrkande())
+      var request = ImmutableCreateYrkandeRequest.builder()
+            .from(createModelCreateYrkandeRequest())
             .addIndividYrkandeRoller(createIndividYrkandeRoll())
             .build();
-      assertEquals(toApiPostYrkandeRequest(yrkande), handlaggningMapper.toPostYrkandeRequest(yrkande));
+      assertEquals(toApiPostYrkandeRequest(request), handlaggningMapper.toPostYrkandeRequest(request));
    }
 
    @Test
    public void should_create_correct_api_post_yrkande_multiple_producerade_resultat()
    {
-      var yrkande = ImmutableYrkande.builder()
-            .from(createModelYrkande())
+      var request = ImmutableCreateYrkandeRequest.builder()
+            .from(createModelCreateYrkandeRequest())
             .addProduceradeResultat(createProduceratResultat())
             .build();
-      assertEquals(toApiPostYrkandeRequest(yrkande), handlaggningMapper.toPostYrkandeRequest(yrkande));
-   }
-
-   @Test
-   public void should_create_correct_api_post_handlaggning_request()
-   {
-      var yrkandeId = UUID.randomUUID();
-      var handlaggningSpecifikationId = UUID.randomUUID();
-
-      se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.PostHandlaggningRequest expectedRequest = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.PostHandlaggningRequest();
-      expectedRequest.setYrkandeId(yrkandeId);
-      expectedRequest.setHandlaggningspecifikationId(handlaggningSpecifikationId);
-
-      assertEquals(expectedRequest, handlaggningMapper.toPostHandlaggningRequest(yrkandeId, handlaggningSpecifikationId));
+      assertEquals(toApiPostYrkandeRequest(request), handlaggningMapper.toPostYrkandeRequest(request));
    }
 
    @Test
