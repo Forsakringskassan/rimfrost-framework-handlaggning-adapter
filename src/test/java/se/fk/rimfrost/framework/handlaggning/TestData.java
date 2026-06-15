@@ -1,5 +1,6 @@
 package se.fk.rimfrost.framework.handlaggning;
 
+import se.fk.rimfrost.framework.handlaggning.model.CreateYrkandeRequest;
 import se.fk.rimfrost.framework.handlaggning.model.Handlaggning;
 import se.fk.rimfrost.framework.handlaggning.model.HandlaggningUpdate;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableHandlaggning;
@@ -8,6 +9,7 @@ import se.fk.rimfrost.framework.handlaggning.model.ImmutableIdtyp;
 import se.fk.rimfrost.framework.handlaggning.model.Beslut;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableBeslut;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableBeslutsrad;
+import se.fk.rimfrost.framework.handlaggning.model.ImmutableCreateYrkandeRequest;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableIndividYrkandeRoll;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableProduceratResultat;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableProduceratResultatRef;
@@ -15,6 +17,7 @@ import se.fk.rimfrost.framework.handlaggning.model.ImmutableUnderlag;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableUppgift;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableUppgiftSpecifikation;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableYrkande;
+import se.fk.rimfrost.framework.handlaggning.model.IndividYrkandeRoll;
 import se.fk.rimfrost.framework.handlaggning.model.ProduceratResultat;
 import se.fk.rimfrost.framework.handlaggning.model.Underlag;
 import se.fk.rimfrost.framework.handlaggning.model.Uppgift;
@@ -27,7 +30,7 @@ import java.util.UUID;
 
 public class TestData
 {
-   public static Yrkande.IndividYrkandeRoll createIndividYrkandeRoll()
+   public static IndividYrkandeRoll createIndividYrkandeRoll()
    {
       var individ = ImmutableIdtyp.builder()
             .typId("ec00ec43-ed93-4e71-b533-88e74417fc53")
@@ -94,6 +97,18 @@ public class TestData
             .yrkandeFrom(OffsetDateTime.parse("2026-04-15T08:00:00+00"))
             .yrkandeTom(OffsetDateTime.parse("2026-04-18T17:00:00+00"))
             .avsikt("NY")
+            .individYrkandeRoller(List.of(createIndividYrkandeRoll()))
+            .produceradeResultat(List.of(createProduceratResultat()))
+            .build();
+   }
+
+   public static CreateYrkandeRequest createModelCreateYrkandeRequest()
+   {
+      return ImmutableCreateYrkandeRequest.builder()
+            .erbjudandeId("59b2a5c2-f102-47ce-98ad-3bac1ab420a8")
+            .yrkandeFrom(OffsetDateTime.parse("2026-04-15T08:00:00+00"))
+            .yrkandeTom(OffsetDateTime.parse("2026-04-18T17:00:00+00"))
+            .handlaggningspecifikationId(UUID.fromString("9a08bfa2-1a4b-4203-a05c-2231ddc115e3"))
             .individYrkandeRoller(List.of(createIndividYrkandeRoll()))
             .produceradeResultat(List.of(createProduceratResultat()))
             .build();

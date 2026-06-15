@@ -31,19 +31,20 @@ public class HandlaggningMapper
    // to API
    //
 
-   public PostYrkandeRequest toPostYrkandeRequest(Yrkande yrkande)
+   public PostYrkandeRequest toPostYrkandeRequest(CreateYrkandeRequest request)
    {
       var postYrkandeRequest = new PostYrkandeRequest();
-      postYrkandeRequest.setErbjudandeId(yrkande.erbjudandeId());
-      postYrkandeRequest.setYrkandeFrom(yrkande.yrkandeFrom());
-      postYrkandeRequest.setYrkandeTom(yrkande.yrkandeTom());
-      postYrkandeRequest.setIndividYrkandeRoller(toApiIndividYrkandeRoller(yrkande.individYrkandeRoller()));
-      postYrkandeRequest.setProduceradeResultat(toApiProduceradeResultat(yrkande.produceradeResultat()));
+      postYrkandeRequest.setErbjudandeId(request.erbjudandeId());
+      postYrkandeRequest.setYrkandeFrom(request.yrkandeFrom());
+      postYrkandeRequest.setYrkandeTom(request.yrkandeTom());
+      postYrkandeRequest.setHandlaggningspecifikationId(request.handlaggningspecifikationId());
+      postYrkandeRequest.setIndividYrkandeRoller(toApiIndividYrkandeRoller(request.individYrkandeRoller()));
+      postYrkandeRequest.setProduceradeResultat(toApiProduceradeResultat(request.produceradeResultat()));
       return postYrkandeRequest;
    }
 
    private List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.IndividYrkandeRoll> toApiIndividYrkandeRoller(
-         List<Yrkande.IndividYrkandeRoll> individYrkandeRoller)
+         List<se.fk.rimfrost.framework.handlaggning.model.IndividYrkandeRoll> individYrkandeRoller)
    {
       return individYrkandeRoller.stream()
             .map(a -> {
@@ -207,11 +208,11 @@ public class HandlaggningMapper
             .toList();
    }
 
-   private List<ImmutableIndividYrkandeRoll> toIndividYrkandeRoller(
+   private List<se.fk.rimfrost.framework.handlaggning.model.IndividYrkandeRoll> toIndividYrkandeRoller(
          List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.IndividYrkandeRoll> apiIndividYrkandeRoller)
    {
       return apiIndividYrkandeRoller.stream()
-            .map(a -> ImmutableIndividYrkandeRoll.builder()
+            .map(a -> (se.fk.rimfrost.framework.handlaggning.model.IndividYrkandeRoll) ImmutableIndividYrkandeRoll.builder()
                   .individ(toIdtyp(a.getIndivid()))
                   .yrkandeRollId(a.getYrkandeRollId())
                   .build())
@@ -257,14 +258,6 @@ public class HandlaggningMapper
    //
    // to API
    //
-
-   public PostHandlaggningRequest toPostHandlaggningRequest(UUID yrkandeId, UUID handlaggningspecifikationId)
-   {
-      var postHandlaggningRequest = new PostHandlaggningRequest();
-      postHandlaggningRequest.setYrkandeId(yrkandeId);
-      postHandlaggningRequest.setHandlaggningspecifikationId(handlaggningspecifikationId);
-      return postHandlaggningRequest;
-   }
 
    public PutHandlaggningRequest toPutHandlaggningRequest(HandlaggningUpdate handlaggningUpdate)
    {
