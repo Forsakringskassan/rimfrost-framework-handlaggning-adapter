@@ -10,7 +10,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
+import org.glassfish.jersey.apache5.connector.Apache5ConnectorProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.proxy.WebResourceFactory;
 import se.fk.rimfrost.framework.handlaggning.exception.HandlaggningException;
@@ -37,7 +37,7 @@ public class HandlaggningAdapter
    void init()
    {
       ClientConfig clientConfig = new ClientConfig();
-      clientConfig.connectorProvider(new ApacheConnectorProvider());
+      clientConfig.connectorProvider(new Apache5ConnectorProvider());
       Client client = ClientBuilder.newClient(clientConfig);
       this.handlaggningClient = WebResourceFactory.newResource(
             HandlaggningControllerApi.class,

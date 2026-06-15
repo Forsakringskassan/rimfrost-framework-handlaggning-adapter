@@ -25,7 +25,7 @@ import static se.fk.rimfrost.framework.handlaggning.TestData.createModelHandlagg
 import static se.fk.rimfrost.framework.handlaggning.TestData.createModelHandlaggningUpdate;
 import static se.fk.rimfrost.framework.handlaggning.TestUtils.toApiPutHandlaggningRequest;
 
-@QuarkusComponentTest
+@QuarkusComponentTest(useSystemConfigSources = true)
 public class HandlaggningAdapterTest
 {
    private static WireMockServer server;
