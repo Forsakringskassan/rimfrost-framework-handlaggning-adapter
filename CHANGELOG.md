@@ -2,6 +2,32 @@
 
 Changelog of rimfrost-framework-handlaggning-adapter.
 
+## 1.2.0 (2026-06-15)
+
+### Features
+
+-  Add support for handlaggning response at yrkande creation ([29793](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/29793c88d51f492) Lars Persson)  
+
+### Bug Fixes
+
+-  **deps**  update dependency org.immutables:value to v2.12.2 ([faffe](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/faffee724100241) renovate[bot])  
+
+### Dependency updates
+
+- update dependency org.immutables:value-processor to v2.12.2 ([c9a51](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/c9a51aa3b5b9fd7) renovate[bot])  
+- update dependency org.apache.maven.plugins:maven-compiler-plugin to v3.15.0 ([4352c](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/4352c1f93a79bab) renovate[bot])  
+### Other changes
+
+**Bump version dependencies**
+
+* This commit bumps version dependencies and replaces jersey-apache-connector 
+* with jersey-apache5-connector. 
+
+[395d3](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/395d330ec14aac4) Lars Persson *2026-06-15 06:36:47*
+
+
+## rimfrost-1.1 (2026-05-28)
+
 ## 1.0.3 (2026-05-28)
 
 ### Bug Fixes
