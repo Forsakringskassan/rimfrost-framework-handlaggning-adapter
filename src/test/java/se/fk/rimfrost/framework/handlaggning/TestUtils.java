@@ -2,7 +2,6 @@ package se.fk.rimfrost.framework.handlaggning;
 
 import se.fk.rimfrost.framework.handlaggning.model.Beslut;
 import se.fk.rimfrost.framework.handlaggning.model.Beslutsrad;
-import se.fk.rimfrost.framework.handlaggning.model.CreateYrkandeRequest;
 import se.fk.rimfrost.framework.handlaggning.model.Handlaggning;
 import se.fk.rimfrost.framework.handlaggning.model.HandlaggningUpdate;
 import se.fk.rimfrost.framework.handlaggning.model.Idtyp;
@@ -13,25 +12,10 @@ import se.fk.rimfrost.framework.handlaggning.model.Underlag;
 import se.fk.rimfrost.framework.handlaggning.model.Uppgift;
 import se.fk.rimfrost.framework.handlaggning.model.UppgiftSpecifikation;
 import se.fk.rimfrost.framework.handlaggning.model.Yrkande;
-import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.PostYrkandeRequest;
 import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.PutHandlaggningRequest;
 
 public class TestUtils
 {
-   public static PostYrkandeRequest toApiPostYrkandeRequest(CreateYrkandeRequest yrkandeRequest)
-   {
-      PostYrkandeRequest request = new PostYrkandeRequest();
-      request.setErbjudandeId(yrkandeRequest.erbjudandeId());
-      request.setYrkandeFrom(yrkandeRequest.yrkandeFrom());
-      request.setYrkandeTom(yrkandeRequest.yrkandeTom());
-      request.setHandlaggningspecifikationId(yrkandeRequest.handlaggningspecifikationId());
-      request.setIndividYrkandeRoller(
-            yrkandeRequest.individYrkandeRoller().stream().map(TestUtils::toApiIndividYrkandeRoll).toList());
-      request.setProduceradeResultat(
-            yrkandeRequest.produceradeResultat().stream().map(TestUtils::toApiProduceratResultat).toList());
-      return request;
-   }
-
    public static PutHandlaggningRequest toApiPutHandlaggningRequest(HandlaggningUpdate handlaggningUpdate)
    {
       PutHandlaggningRequest request = new PutHandlaggningRequest();
@@ -175,6 +159,11 @@ public class TestUtils
 
    private static se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgift toApiUppgift(Uppgift modelUppgift)
    {
+      if (modelUppgift == null)
+      {
+         return null;
+      }
+
       se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgift uppgift = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgift();
       uppgift.setId(modelUppgift.id());
       uppgift.setVersion(modelUppgift.version());

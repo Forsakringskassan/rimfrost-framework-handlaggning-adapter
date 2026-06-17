@@ -16,6 +16,7 @@ public interface HandlaggningUpdate
 
    Yrkande yrkande();
 
+   @Nullable
    UUID processInstansId();
 
    OffsetDateTime skapadTS();
@@ -27,5 +28,6 @@ public interface HandlaggningUpdate
 
    List<Underlag> underlag();
 
+   @Nullable
    Uppgift uppgift();
 }

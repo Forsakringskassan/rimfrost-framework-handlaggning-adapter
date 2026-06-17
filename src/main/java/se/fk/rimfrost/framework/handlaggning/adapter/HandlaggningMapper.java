@@ -15,7 +15,6 @@ import se.fk.rimfrost.framework.handlaggning.model.UppgiftSpecifikation;
 import se.fk.rimfrost.framework.handlaggning.model.Yrkande;
 import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.*;
 import java.util.List;
-import java.util.UUID;
 
 @ApplicationScoped
 public class HandlaggningMapper
@@ -30,18 +29,6 @@ public class HandlaggningMapper
    //
    // to API
    //
-
-   public PostYrkandeRequest toPostYrkandeRequest(CreateYrkandeRequest request)
-   {
-      var postYrkandeRequest = new PostYrkandeRequest();
-      postYrkandeRequest.setErbjudandeId(request.erbjudandeId());
-      postYrkandeRequest.setYrkandeFrom(request.yrkandeFrom());
-      postYrkandeRequest.setYrkandeTom(request.yrkandeTom());
-      postYrkandeRequest.setHandlaggningspecifikationId(request.handlaggningspecifikationId());
-      postYrkandeRequest.setIndividYrkandeRoller(toApiIndividYrkandeRoller(request.individYrkandeRoller()));
-      postYrkandeRequest.setProduceradeResultat(toApiProduceradeResultat(request.produceradeResultat()));
-      return postYrkandeRequest;
-   }
 
    private List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.IndividYrkandeRoll> toApiIndividYrkandeRoller(
          List<se.fk.rimfrost.framework.handlaggning.model.IndividYrkandeRoll> individYrkandeRoller)
@@ -301,6 +288,11 @@ public class HandlaggningMapper
 
    private se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgift toApiUppgift(Uppgift uppgift)
    {
+      if (uppgift == null)
+      {
+         return null;
+      }
+
       var apiUppgift = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgift();
       apiUppgift.setId(uppgift.id());
       apiUppgift.setVersion(uppgift.version());
@@ -355,6 +347,11 @@ public class HandlaggningMapper
 
    private Uppgift toUppgift(se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgift apiUppgift)
    {
+      if (apiUppgift == null)
+      {
+         return null;
+      }
+
       return ImmutableUppgift.builder()
             .id(apiUppgift.getId())
             .version(apiUppgift.getVersion())

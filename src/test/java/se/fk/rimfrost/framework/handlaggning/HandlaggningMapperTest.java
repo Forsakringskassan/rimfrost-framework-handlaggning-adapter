@@ -4,7 +4,6 @@ import io.quarkus.test.component.QuarkusComponentTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 import se.fk.rimfrost.framework.handlaggning.adapter.HandlaggningMapper;
-import se.fk.rimfrost.framework.handlaggning.model.ImmutableCreateYrkandeRequest;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableHandlaggning;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableHandlaggningUpdate;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableUppgift;
@@ -14,7 +13,6 @@ import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.PutHandlaggnin
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createBeslut;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createIndividYrkandeRoll;
-import static se.fk.rimfrost.framework.handlaggning.TestData.createModelCreateYrkandeRequest;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createModelHandlaggning;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createModelHandlaggningUpdate;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createModelYrkande;
@@ -23,7 +21,6 @@ import static se.fk.rimfrost.framework.handlaggning.TestData.createUnderlag;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createUppgift;
 import static se.fk.rimfrost.framework.handlaggning.TestUtils.toApiHandlaggning;
 import static se.fk.rimfrost.framework.handlaggning.TestUtils.toApiHandlaggningUpdate;
-import static se.fk.rimfrost.framework.handlaggning.TestUtils.toApiPostYrkandeRequest;
 import static se.fk.rimfrost.framework.handlaggning.TestUtils.toApiYrkande;
 
 @QuarkusComponentTest
@@ -85,33 +82,6 @@ public class HandlaggningMapperTest
    }
 
    @Test
-   public void should_create_correct_api_post_yrkande()
-   {
-      var yrkande = createModelCreateYrkandeRequest();
-      assertEquals(toApiPostYrkandeRequest(yrkande), handlaggningMapper.toPostYrkandeRequest(yrkande));
-   }
-
-   @Test
-   public void should_create_correct_api_post_yrkande_multiple_individ_roller()
-   {
-      var request = ImmutableCreateYrkandeRequest.builder()
-            .from(createModelCreateYrkandeRequest())
-            .addIndividYrkandeRoller(createIndividYrkandeRoll())
-            .build();
-      assertEquals(toApiPostYrkandeRequest(request), handlaggningMapper.toPostYrkandeRequest(request));
-   }
-
-   @Test
-   public void should_create_correct_api_post_yrkande_multiple_producerade_resultat()
-   {
-      var request = ImmutableCreateYrkandeRequest.builder()
-            .from(createModelCreateYrkandeRequest())
-            .addProduceradeResultat(createProduceratResultat())
-            .build();
-      assertEquals(toApiPostYrkandeRequest(request), handlaggningMapper.toPostYrkandeRequest(request));
-   }
-
-   @Test
    public void should_create_correct_api_put_handlaggning_request()
    {
       var handlaggningUpdate = createModelHandlaggningUpdate();
@@ -125,7 +95,26 @@ public class HandlaggningMapperTest
    public void should_create_correct_api_handlaggning_update()
    {
       var handlaggningUpdate = createModelHandlaggningUpdate();
-      ;
+      assertEquals(toApiHandlaggningUpdate(handlaggningUpdate), handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate));
+   }
+
+   @Test
+   public void should_create_correct_api_handlaggning_update_null_uppgift()
+   {
+      var handlaggningUpdate = ImmutableHandlaggningUpdate.builder()
+            .from(createModelHandlaggningUpdate())
+            .uppgift(null)
+            .build();
+      assertEquals(toApiHandlaggningUpdate(handlaggningUpdate), handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate));
+   }
+
+   @Test
+   public void should_create_correct_api_handlaggning_update_null_processinstans_id()
+   {
+      var handlaggningUpdate = ImmutableHandlaggningUpdate.builder()
+            .from(createModelHandlaggningUpdate())
+            .processInstansId(null)
+            .build();
       assertEquals(toApiHandlaggningUpdate(handlaggningUpdate), handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate));
    }
 
@@ -270,7 +259,26 @@ public class HandlaggningMapperTest
    public void should_create_correct_model_handlaggning_update()
    {
       var handlaggningUpdate = createModelHandlaggningUpdate();
-      ;
+      assertEquals(handlaggningUpdate, handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(handlaggningUpdate)));
+   }
+
+   @Test
+   public void should_create_correct_model_handlaggning_update_null_uppgift()
+   {
+      var handlaggningUpdate = ImmutableHandlaggningUpdate.builder()
+            .from(createModelHandlaggningUpdate())
+            .uppgift(null)
+            .build();
+      assertEquals(handlaggningUpdate, handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(handlaggningUpdate)));
+   }
+
+   @Test
+   public void should_create_correct_model_handlaggning_update_null_processinstans_id()
+   {
+      var handlaggningUpdate = ImmutableHandlaggningUpdate.builder()
+            .from(createModelHandlaggningUpdate())
+            .processInstansId(null)
+            .build();
       assertEquals(handlaggningUpdate, handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(handlaggningUpdate)));
    }
 
