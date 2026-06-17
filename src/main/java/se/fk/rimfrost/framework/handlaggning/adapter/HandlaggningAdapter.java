@@ -14,7 +14,6 @@ import org.glassfish.jersey.apache5.connector.Apache5ConnectorProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.proxy.WebResourceFactory;
 import se.fk.rimfrost.framework.handlaggning.exception.HandlaggningException;
-import se.fk.rimfrost.framework.handlaggning.model.CreateYrkandeRequest;
 import se.fk.rimfrost.framework.handlaggning.model.Handlaggning;
 import se.fk.rimfrost.framework.handlaggning.model.HandlaggningUpdate;
 import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.HandlaggningControllerApi;
@@ -42,37 +41,6 @@ public class HandlaggningAdapter
       this.handlaggningClient = WebResourceFactory.newResource(
             HandlaggningControllerApi.class,
             client.target(this.handlaggningBaseUrl));
-   }
-
-   public Handlaggning createYrkande(CreateYrkandeRequest request) throws HandlaggningException
-   {
-      try
-      {
-         var postYrkandeRequest = handlaggningMapper.toPostYrkandeRequest(request);
-         var postYrkandeResponse = handlaggningClient.postYrkande(postYrkandeRequest);
-         if (postYrkandeResponse == null)
-         {
-            throw new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR,
-                  "Oväntat fel vid skapande av yrkande, response är null");
-         }
-
-         return handlaggningMapper.toHandlaggning(postYrkandeResponse.getHandlaggning());
-      }
-      catch (BadRequestException e)
-      {
-         throw new HandlaggningException(HandlaggningException.ErrorType.BAD_REQUEST,
-               "Felaktig förfrågan vid skapande av yrkande", e);
-      }
-      catch (ProcessingException e)
-      {
-         throw new HandlaggningException(HandlaggningException.ErrorType.SERVICE_UNAVAILABLE,
-               "Kunde inte nå handläggningsservice", e);
-      }
-      catch (WebApplicationException e)
-      {
-         throw new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR,
-               "Oväntat fel vid skapande av yrkande, status: " + e.getResponse().getStatus(), e);
-      }
    }
 
    public Handlaggning readHandlaggning(UUID handlaggningId) throws HandlaggningException
