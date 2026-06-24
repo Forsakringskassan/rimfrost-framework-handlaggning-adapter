@@ -2,6 +2,13 @@
 
 Changelog of rimfrost-framework-handlaggning-adapter.
 
+## 1.2.2 (2026-06-24)
+
+### Bug Fixes
+
+-  Close adapter client instance ([c07cb](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/c07cb687a7b53de) Lars Persson)  
+-  **deps**  update dependency io.quarkus:quarkus-bom to v3.37.0 ([26f8d](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/26f8d13872c142d) renovate[bot])  
+
 ## 1.2.1 (2026-06-17)
 
 ### Bug Fixes
