@@ -1,6 +1,7 @@
 package se.fk.rimfrost.framework.handlaggning.adapter;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
@@ -29,6 +30,8 @@ public class HandlaggningAdapter
 
    private HandlaggningControllerApi handlaggningClient;
 
+   private Client client;
+
    @Inject
    HandlaggningMapper handlaggningMapper;
 
@@ -37,10 +40,22 @@ public class HandlaggningAdapter
    {
       ClientConfig clientConfig = new ClientConfig();
       clientConfig.connectorProvider(new Apache5ConnectorProvider());
-      Client client = ClientBuilder.newClient(clientConfig);
+      this.client = ClientBuilder.newClient(clientConfig);
       this.handlaggningClient = WebResourceFactory.newResource(
             HandlaggningControllerApi.class,
             client.target(this.handlaggningBaseUrl));
+   }
+
+   @PreDestroy
+   void destroy()
+   {
+      this.handlaggningClient = null;
+
+      if (this.client != null)
+      {
+         this.client.close();
+         this.client = null;
+      }
    }
 
    public Handlaggning readHandlaggning(UUID handlaggningId) throws HandlaggningException
