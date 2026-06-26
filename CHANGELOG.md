@@ -2,6 +2,12 @@
 
 Changelog of rimfrost-framework-handlaggning-adapter.
 
+## 1.2.3 (2026-06-26)
+
+### Bug Fixes
+
+-  Bump rimfrost-service-handlaggning-openapi version ([ffdda](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/ffdda78938ed1f2) Lars Persson)  
+
 ## 1.2.2 (2026-06-24)
 
 ### Bug Fixes
