@@ -123,6 +123,12 @@ public class HandlaggningAdapter
       }
       catch (WebApplicationException e)
       {
+         if (e.getResponse().getStatus() == 409)
+         {
+            throw new HandlaggningException(HandlaggningException.ErrorType.CONFLICT,
+                  "Konflikt vid uppdatering av handläggning med id: " + handlaggningUpdate.id(), e);
+         }
+
          throw new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR,
                "Oväntat fel vid uppdatering av handläggning med id: " + handlaggningUpdate.id() + ", status: "
                      + e.getResponse().getStatus(),

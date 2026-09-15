@@ -5,7 +5,7 @@ public class HandlaggningException extends Exception
 
    public enum ErrorType
    {
-      NOT_FOUND, BAD_REQUEST, SERVICE_UNAVAILABLE, UNEXPECTED_ERROR
+      NOT_FOUND, BAD_REQUEST, CONFLICT, SERVICE_UNAVAILABLE, UNEXPECTED_ERROR
    }
 
    private final ErrorType errorType;
