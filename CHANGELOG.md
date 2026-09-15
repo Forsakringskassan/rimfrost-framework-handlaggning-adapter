@@ -2,6 +2,22 @@
 
 Changelog of rimfrost-framework-handlaggning-adapter.
 
+## 1.2.4 (2026-09-15)
+
+### Bug Fixes
+
+-  Add support for CONFLICT error type ([3b766](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/3b7660809d2496c) Lars Persson)  
+-  **deps**  update dependency io.quarkus:quarkus-bom to v3.39.2 ([477e0](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/477e055d7d99d23) renovate[bot])  
+-  **deps**  update dependency io.quarkus:quarkus-bom to v3.39.0 ([0ebc5](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/0ebc52d948881ee) renovate[bot])  
+-  **deps**  update dependency io.quarkus:quarkus-bom to v3.38.1 ([b4b04](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/b4b0476ebce81f4) renovate[bot])  
+-  **deps**  update dependency io.quarkus:quarkus-bom to v3.38.0 ([84a8b](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/84a8b58a583fd2c) renovate[bot])  
+-  **deps**  update dependency io.quarkus:quarkus-bom to v3.37.3 ([fab97](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/fab9788093675be) renovate[bot])  
+-  **deps**  update dependency se.fk.rimfrost:rimfrost-service-handlaggning-openapi-jaxrs-spec to v2.0.6 ([832c0](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/832c0579c39374f) renovate[bot])  
+
+### Dependency updates
+
+- update dependency org.apache.maven.plugins:maven-compiler-plugin to v3.16.0 ([a137e](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/a137e89d5b66793) renovate[bot])  
+- pin forsakringskassan/.github action to d1349e6 ([c305e](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/c305e0fba68d324) renovate[bot])  
 ## 1.2.3 (2026-06-26)
 
 ### Bug Fixes
