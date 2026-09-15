@@ -153,6 +153,19 @@ public class HandlaggningAdapterTest
    }
 
    @Test
+   public void should_throw_with_error_type_conflict_on_status_409_during_update_handlaggning()
+         throws HandlaggningException
+   {
+      server.stubFor(WireMock.put(WireMock.urlPathMatching("/handlaggning/.+"))
+            .willReturn(WireMock.aResponse().withStatus(409)));
+      var handlaggningUpdate = createModelHandlaggningUpdate();
+      Mockito.when(handlaggningMapper.toPutHandlaggningRequest(handlaggningUpdate))
+            .thenReturn(toApiPutHandlaggningRequest(handlaggningUpdate));
+      var exception = assertThrows(HandlaggningException.class, () -> handlaggningAdapter.updateHandlaggning(handlaggningUpdate));
+      assertEquals(HandlaggningException.ErrorType.CONFLICT, exception.getErrorType());
+   }
+
+   @Test
    public void should_throw_with_error_type_unexpected_error_on_status_200_and_null_response_during_update_handlaggning()
          throws HandlaggningException
    {
