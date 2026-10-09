@@ -7,11 +7,14 @@ import se.fk.rimfrost.framework.handlaggning.model.Beslutsrad;
 import se.fk.rimfrost.framework.handlaggning.model.Handlaggning;
 import se.fk.rimfrost.framework.handlaggning.model.HandlaggningUpdate;
 import se.fk.rimfrost.framework.handlaggning.model.Idtyp;
-import se.fk.rimfrost.framework.handlaggning.model.ProduceratResultat;
-import se.fk.rimfrost.framework.handlaggning.model.ProduceratResultatRef;
-import se.fk.rimfrost.framework.handlaggning.model.Underlag;
+import se.fk.rimfrost.framework.handlaggning.model.Regelutfall;
+import se.fk.rimfrost.framework.handlaggning.model.RollIYrkande;
+import se.fk.rimfrost.framework.handlaggning.model.SakfragaStallningstagande;
+import se.fk.rimfrost.framework.handlaggning.model.SakfragaStallningstagandeRef;
 import se.fk.rimfrost.framework.handlaggning.model.Uppgift;
 import se.fk.rimfrost.framework.handlaggning.model.UppgiftSpecifikation;
+import se.fk.rimfrost.framework.handlaggning.model.Uppgiftsdata;
+import se.fk.rimfrost.framework.handlaggning.model.Uppgiftsdatakoppling;
 import se.fk.rimfrost.framework.handlaggning.model.Yrkande;
 import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.*;
 import java.util.List;
@@ -30,14 +33,16 @@ public class HandlaggningMapper
    // to API
    //
 
-   private List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.IndividYrkandeRoll> toApiIndividYrkandeRoller(
-         List<se.fk.rimfrost.framework.handlaggning.model.IndividYrkandeRoll> individYrkandeRoller)
+   private List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.RollIYrkande> toApiRollerIYrkande(
+         List<RollIYrkande> rollerIYrkande)
    {
-      return individYrkandeRoller.stream()
+      return rollerIYrkande.stream()
             .map(a -> {
-               var b = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.IndividYrkandeRoll();
+               var b = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.RollIYrkande();
+               b.setId(a.id());
                b.setIndivid(toApiIdtyp(a.individ()));
                b.setYrkandeRollId(a.yrkandeRollId());
+               b.setAvserYrkande(a.avserYrkande());
                return b;
             })
             .toList();
@@ -57,31 +62,26 @@ public class HandlaggningMapper
       return apiIdTyp;
    }
 
-   private List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.ProduceratResultat> toApiProduceradeResultat(
-         List<ProduceratResultat> produceradeResultat)
+   private List<SakfragaStallningstagandeContainer> toApiSakfragorStallningstaganden(
+         List<SakfragaStallningstagande> sakfragorStallningstaganden)
    {
-      return produceradeResultat.stream()
+      return sakfragorStallningstaganden.stream()
             .map(a -> {
-               var b = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.ProduceratResultat();
+               var b = new SakfragaStallningstagandeContainer();
                b.setId(a.id());
-               b.setVersion(a.version());
-               b.setFrom(a.resultatFrom());
-               b.setTom(a.resultatTom());
-               b.setYrkandestatus(a.yrkandeStatus());
-               b.setAvslagsanledning(a.avslagsanledning());
-               b.setTyp(a.typ());
+               b.setObjektTypId(a.objektTypId());
                b.setData(a.data());
                return b;
             })
             .toList();
    }
 
-   private List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.ProduceratResultatRef> toApiProduceradeResultatRef(
-         List<ProduceratResultatRef> produceradeResultatRef)
+   private List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.SakfragaStallningstagandeRef> toApiSakfragorStallningstagandenRef(
+         List<SakfragaStallningstagandeRef> sakfragorStallningstagandenRef)
    {
-      return produceradeResultatRef.stream()
+      return sakfragorStallningstagandenRef.stream()
             .map(a -> {
-               var b = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.ProduceratResultatRef();
+               var b = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.SakfragaStallningstagandeRef();
                b.setId(a.id());
                b.setVersion(a.version());
                return b;
@@ -97,7 +97,7 @@ public class HandlaggningMapper
       apiBeslutsrad.setBeslutsTyp(beslutsrad.beslutsTyp());
       apiBeslutsrad.setBeslutsUtfall(beslutsrad.beslutsUtfall());
       apiBeslutsrad.setAvslutsTyp(beslutsrad.avslutsTyp());
-      apiBeslutsrad.setProduceradeResultatRef(toApiProduceradeResultatRef(beslutsrad.produceradeResultatRef()));
+      apiBeslutsrad.setSakfragorStallningstaganden(toApiSakfragorStallningstagandenRef(beslutsrad.sakfragorStallningstaganden()));
       return apiBeslutsrad;
    }
 
@@ -118,21 +118,15 @@ public class HandlaggningMapper
       var apiYrkande = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Yrkande();
       apiYrkande.setId(yrkande.id());
       apiYrkande.setVersion(yrkande.version());
-      apiYrkande.setErbjudandeId(yrkande.erbjudandeId());
+      apiYrkande.setIngangtypId(yrkande.ingangtypId());
       apiYrkande.setYrkandedatum(yrkande.yrkandeDatum());
       apiYrkande.setYrkandestatus(yrkande.yrkandeStatus());
       apiYrkande.setYrkandeFrom(yrkande.yrkandeFrom());
       apiYrkande.setYrkandeTom(yrkande.yrkandeTom());
       apiYrkande.setAvsikt(yrkande.avsikt());
-      apiYrkande.setIndividYrkandeRoller(toApiIndividYrkandeRoller(yrkande.individYrkandeRoller()));
-      apiYrkande.setProduceradeResultat(toApiProduceradeResultat(yrkande.produceradeResultat()));
-
-      var beslut = yrkande.beslut();
-      if (beslut != null)
-      {
-         apiYrkande.setBeslut(toApiBeslut(beslut));
-      }
-
+      apiYrkande.setRollerIYrkande(toApiRollerIYrkande(yrkande.rollerIYrkande()));
+      apiYrkande.setSakfragorStallningstaganden(toApiSakfragorStallningstaganden(yrkande.sakfragorStallningstaganden()));
+      apiYrkande.setBeslut(yrkande.beslut().stream().map(this::toApiBeslut).toList());
       return apiYrkande;
    }
 
@@ -140,25 +134,19 @@ public class HandlaggningMapper
 
    public Yrkande toYrkande(se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Yrkande apiYrkande)
    {
-      var builder = ImmutableYrkande.builder()
+      return ImmutableYrkande.builder()
             .id(apiYrkande.getId())
             .version(apiYrkande.getVersion())
-            .erbjudandeId(apiYrkande.getErbjudandeId())
+            .ingangtypId(apiYrkande.getIngangtypId())
             .yrkandeDatum(apiYrkande.getYrkandedatum())
             .yrkandeStatus(apiYrkande.getYrkandestatus())
             .yrkandeFrom(apiYrkande.getYrkandeFrom())
             .yrkandeTom(apiYrkande.getYrkandeTom())
-            .avsikt(String.valueOf(apiYrkande.getAvsikt()))
-            .individYrkandeRoller(toIndividYrkandeRoller(apiYrkande.getIndividYrkandeRoller()))
-            .produceradeResultat(toProduceradeResultat(apiYrkande.getProduceradeResultat()));
-
-      var apiBeslut = apiYrkande.getBeslut();
-      if (apiBeslut != null)
-      {
-         builder.beslut(toBeslut(apiBeslut));
-      }
-
-      return builder.build();
+            .avsikt(apiYrkande.getAvsikt())
+            .rollerIYrkande(toRollerIYrkande(apiYrkande.getRollerIYrkande()))
+            .sakfragorStallningstaganden(toSakfragorStallningstaganden(apiYrkande.getSakfragorStallningstaganden()))
+            .beslut(apiYrkande.getBeslut().stream().map(this::toBeslut).toList())
+            .build();
    }
 
    private Beslut toBeslut(se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Beslut apiBeslut)
@@ -180,28 +168,30 @@ public class HandlaggningMapper
             .beslutsTyp(apiBeslutsrad.getBeslutsTyp())
             .beslutsUtfall(apiBeslutsrad.getBeslutsUtfall())
             .avslutsTyp(apiBeslutsrad.getAvslutsTyp())
-            .produceradeResultatRef(toProduceradeResultatRef(apiBeslutsrad.getProduceradeResultatRef()))
+            .sakfragorStallningstaganden(toSakfragorStallningstagandenRef(apiBeslutsrad.getSakfragorStallningstaganden()))
             .build();
    }
 
-   private List<ProduceratResultatRef> toProduceradeResultatRef(
-         List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.ProduceratResultatRef> apiProduceradeResultatRef)
+   private List<SakfragaStallningstagandeRef> toSakfragorStallningstagandenRef(
+         List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.SakfragaStallningstagandeRef> apiSakfragorStallningstagandenRef)
    {
-      return apiProduceradeResultatRef.stream()
-            .map(a -> (ProduceratResultatRef) ImmutableProduceratResultatRef.builder()
+      return apiSakfragorStallningstagandenRef.stream()
+            .map(a -> (SakfragaStallningstagandeRef) ImmutableSakfragaStallningstagandeRef.builder()
                   .id(a.getId())
                   .version(a.getVersion())
                   .build())
             .toList();
    }
 
-   private List<se.fk.rimfrost.framework.handlaggning.model.IndividYrkandeRoll> toIndividYrkandeRoller(
-         List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.IndividYrkandeRoll> apiIndividYrkandeRoller)
+   private List<RollIYrkande> toRollerIYrkande(
+         List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.RollIYrkande> apiRollerIYrkande)
    {
-      return apiIndividYrkandeRoller.stream()
-            .map(a -> (se.fk.rimfrost.framework.handlaggning.model.IndividYrkandeRoll) ImmutableIndividYrkandeRoll.builder()
+      return apiRollerIYrkande.stream()
+            .map(a -> (RollIYrkande) ImmutableRollIYrkande.builder()
+                  .id(a.getId())
                   .individ(toIdtyp(a.getIndivid()))
                   .yrkandeRollId(a.getYrkandeRollId())
+                  .avserYrkande(a.getAvserYrkande())
                   .build())
             .toList();
    }
@@ -219,18 +209,13 @@ public class HandlaggningMapper
             .build();
    }
 
-   private List<ImmutableProduceratResultat> toProduceradeResultat(
-         List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.ProduceratResultat> apiProduceradeResultat)
+   private List<SakfragaStallningstagande> toSakfragorStallningstaganden(
+         List<SakfragaStallningstagandeContainer> apiSakfragorStallningstaganden)
    {
-      return apiProduceradeResultat.stream()
-            .map(a -> ImmutableProduceratResultat.builder()
+      return apiSakfragorStallningstaganden.stream()
+            .map(a -> (SakfragaStallningstagande) ImmutableSakfragaStallningstagande.builder()
                   .id(a.getId())
-                  .version(a.getVersion())
-                  .resultatFrom(a.getFrom())
-                  .resultatTom(a.getTom())
-                  .yrkandeStatus(a.getYrkandestatus())
-                  .avslagsanledning(a.getAvslagsanledning())
-                  .typ(a.getTyp())
+                  .objektTypId(a.getObjektTypId())
                   .data(a.getData())
                   .build())
             .toList();
@@ -246,44 +231,72 @@ public class HandlaggningMapper
    // to API
    //
 
-   public PutHandlaggningRequest toPutHandlaggningRequest(HandlaggningUpdate handlaggningUpdate)
-   {
-      var putHandlaggningRequest = new PutHandlaggningRequest();
-      putHandlaggningRequest.setHandlaggning(toApiHandlaggningUpdate(handlaggningUpdate));
-      return putHandlaggningRequest;
-   }
-
    public se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.HandlaggningUpdate toApiHandlaggningUpdate(
          HandlaggningUpdate handlaggningUpdate)
    {
       var apiHandlaggningUpdate = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.HandlaggningUpdate();
-      apiHandlaggningUpdate.setId(handlaggningUpdate.id());
-      apiHandlaggningUpdate.setVersion(handlaggningUpdate.version());
-      apiHandlaggningUpdate.setYrkande(toApiYrkande(handlaggningUpdate.yrkande()));
-      apiHandlaggningUpdate.setProcessinstansId(handlaggningUpdate.processInstansId());
-      apiHandlaggningUpdate.setSkapadTS(handlaggningUpdate.skapadTS());
-      apiHandlaggningUpdate.setAvslutadTS(handlaggningUpdate.avslutadTS());
-      apiHandlaggningUpdate.setHandlaggningspecifikationId(handlaggningUpdate.handlaggningspecifikationId());
-      apiHandlaggningUpdate.setUnderlag(toApiUnderlagList(handlaggningUpdate.underlag()));
+      apiHandlaggningUpdate.setHandlaggning(toApiHandlaggning(handlaggningUpdate.handlaggning()));
       apiHandlaggningUpdate.setUppgift(toApiUppgift(handlaggningUpdate.uppgift()));
       return apiHandlaggningUpdate;
    }
 
-   private se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Underlag toApiUnderlag(Underlag underlag)
+   private se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Handlaggning toApiHandlaggning(
+         Handlaggning handlaggning)
    {
-      var apiUnderlag = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Underlag();
-      apiUnderlag.setTyp(underlag.typ());
-      apiUnderlag.setVersion(underlag.version());
-      apiUnderlag.setData(underlag.data());
-      return apiUnderlag;
+      var apiHandlaggning = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Handlaggning();
+      apiHandlaggning.setId(handlaggning.id());
+      apiHandlaggning.setVersion(handlaggning.version());
+      apiHandlaggning.setYrkande(toApiYrkande(handlaggning.yrkande()));
+      apiHandlaggning.setHandlaggningIdTyp(handlaggning.handlaggningIdTyp());
+      apiHandlaggning.setHandlaggningIdVarde(handlaggning.handlaggningIdVarde());
+      apiHandlaggning.setSkapadTS(handlaggning.skapadTS());
+      apiHandlaggning.setAvslutadTS(handlaggning.avslutadTS());
+      apiHandlaggning.setHandlaggningspecifikationId(handlaggning.handlaggningspecifikationId());
+      return apiHandlaggning;
    }
 
-   private List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Underlag> toApiUnderlagList(
-         List<Underlag> underlagList)
+   private List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdata> toApiUnderlag(
+         List<Uppgiftsdata> underlag)
    {
-      return underlagList.stream()
-            .map(this::toApiUnderlag)
+      return underlag.stream()
+            .map(a -> {
+               var kopia = new UppgiftsdataUnderlag();
+               kopia.setTyp(UppgiftsdataUnderlag.TypEnum.KOPIA);
+               kopia.setInformationsobjektId(a.informationsobjektId());
+               kopia.setInformationsobjektversion(a.informationsobjektversion());
+               kopia.setInformationsobjekttyp(a.informationsobjekttyp());
+               kopia.setData(a.data());
+               var b = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdata();
+               b.setUnderlag(kopia);
+               return b;
+            })
             .toList();
+   }
+
+   private List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdatakoppling> toApiResultat(
+         List<Uppgiftsdatakoppling> resultat)
+   {
+      return resultat.stream()
+            .map(a -> {
+               var b = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdatakoppling();
+               b.setTyp(se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdatakoppling.TypEnum.KOPPLING);
+               b.setInformationsobjektId(a.informationsobjektId());
+               b.setInformationsobjektversion(a.informationsobjektversion());
+               return b;
+            })
+            .toList();
+   }
+
+   private se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Regelutfall toApiRegelutfall(Regelutfall regelutfall)
+   {
+      if (regelutfall == null)
+      {
+         return null;
+      }
+
+      var apiRegelutfall = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Regelutfall();
+      apiRegelutfall.setVarde(regelutfall.varde());
+      return apiRegelutfall;
    }
 
    private se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgift toApiUppgift(Uppgift uppgift)
@@ -296,14 +309,18 @@ public class HandlaggningMapper
       var apiUppgift = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgift();
       apiUppgift.setId(uppgift.id());
       apiUppgift.setVersion(uppgift.version());
-      apiUppgift.setSkapadTs(uppgift.skapadTs());
-      apiUppgift.setUtfordTs(uppgift.utfordTs());
-      apiUppgift.setPlaneradTs(uppgift.planeradTs());
-      apiUppgift.setUtforarId(toApiIdtyp(uppgift.utforarId()));
+      apiUppgift.setSkapadTS(uppgift.skapadTS());
+      apiUppgift.setUtfordTS(uppgift.utfordTS());
+      apiUppgift.setPlaneradTillTS(uppgift.planeradTillTS());
+      apiUppgift.setUtforare(toApiIdtyp(uppgift.utforare()));
       apiUppgift.setAktivitetId(uppgift.aktivitetId());
       apiUppgift.setUppgiftspecifikation(toApiUppgiftSpecifikation(uppgift.uppgiftSpecifikation()));
       apiUppgift.setUppgiftStatus(uppgift.uppgiftStatus());
+      apiUppgift.setKommentar(uppgift.kommentar());
       apiUppgift.setFsSAinformation(uppgift.fSSAinformation());
+      apiUppgift.setRegelutfall(toApiRegelutfall(uppgift.regelutfall()));
+      apiUppgift.setUnderlag(toApiUnderlag(uppgift.underlag()));
+      apiUppgift.setResultat(toApiResultat(uppgift.resultat()));
       return apiUppgift;
    }
 
@@ -320,21 +337,52 @@ public class HandlaggningMapper
    // to model
    //
 
-   private Underlag toUnderlag(se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Underlag apiUnderlag)
+   private List<Uppgiftsdata> toUnderlag(
+         List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdata> apiUnderlag)
    {
-      return ImmutableUnderlag.builder()
-            .typ(apiUnderlag.getTyp())
-            .version(apiUnderlag.getVersion())
-            .data(apiUnderlag.getData())
-            .build();
+      if (apiUnderlag == null)
+      {
+         return List.of();
+      }
+
+      return apiUnderlag.stream()
+            .map(se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdata::getUnderlag)
+            .map(a -> (Uppgiftsdata) ImmutableUppgiftsdata.builder()
+                  .informationsobjektId(a.getInformationsobjektId())
+                  .informationsobjektversion(a.getInformationsobjektversion())
+                  .informationsobjekttyp(a.getInformationsobjekttyp())
+                  .data(a.getData())
+                  .build())
+            .toList();
    }
 
-   private List<Underlag> toUnderlagList(
-         List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Underlag> apiUnderlagList)
+   private List<Uppgiftsdatakoppling> toResultat(
+         List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdatakoppling> apiResultat)
    {
-      return apiUnderlagList.stream()
-            .map(this::toUnderlag)
+      if (apiResultat == null)
+      {
+         return List.of();
+      }
+
+      return apiResultat.stream()
+            .map(a -> (Uppgiftsdatakoppling) ImmutableUppgiftsdatakoppling.builder()
+                  .informationsobjektId(a.getInformationsobjektId())
+                  .informationsobjektversion(a.getInformationsobjektversion())
+                  .build())
             .toList();
+   }
+
+   private Regelutfall toRegelutfall(
+         se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Regelutfall apiRegelutfall)
+   {
+      if (apiRegelutfall == null)
+      {
+         return null;
+      }
+
+      return ImmutableRegelutfall.builder()
+            .varde(apiRegelutfall.getVarde())
+            .build();
    }
 
    private UppgiftSpecifikation toUppgiftSpecifikation(
@@ -355,14 +403,18 @@ public class HandlaggningMapper
       return ImmutableUppgift.builder()
             .id(apiUppgift.getId())
             .version(apiUppgift.getVersion())
-            .skapadTs(apiUppgift.getSkapadTs())
-            .utfordTs(apiUppgift.getUtfordTs())
-            .planeradTs(apiUppgift.getPlaneradTs())
-            .utforarId(toIdtyp(apiUppgift.getUtforarId()))
+            .skapadTS(apiUppgift.getSkapadTS())
+            .utfordTS(apiUppgift.getUtfordTS())
+            .planeradTillTS(apiUppgift.getPlaneradTillTS())
+            .utforare(toIdtyp(apiUppgift.getUtforare()))
             .aktivitetId(apiUppgift.getAktivitetId())
             .uppgiftSpecifikation(toUppgiftSpecifikation(apiUppgift.getUppgiftspecifikation()))
             .uppgiftStatus(apiUppgift.getUppgiftStatus())
+            .kommentar(apiUppgift.getKommentar())
             .fSSAinformation(apiUppgift.getFsSAinformation())
+            .regelutfall(toRegelutfall(apiUppgift.getRegelutfall()))
+            .underlag(toUnderlag(apiUppgift.getUnderlag()))
+            .resultat(toResultat(apiUppgift.getResultat()))
             .build();
    }
 
@@ -370,17 +422,9 @@ public class HandlaggningMapper
          se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.HandlaggningUpdate apiHandlaggningUpdate)
    {
       return ImmutableHandlaggningUpdate.builder()
-            .id(apiHandlaggningUpdate.getId())
-            .version(apiHandlaggningUpdate.getVersion())
-            .yrkande(toYrkande(apiHandlaggningUpdate.getYrkande()))
-            .processInstansId(apiHandlaggningUpdate.getProcessinstansId())
-            .skapadTS(apiHandlaggningUpdate.getSkapadTS())
-            .avslutadTS(apiHandlaggningUpdate.getAvslutadTS())
-            .handlaggningspecifikationId(apiHandlaggningUpdate.getHandlaggningspecifikationId())
-            .underlag(toUnderlagList(apiHandlaggningUpdate.getUnderlag()))
+            .handlaggning(toHandlaggning(apiHandlaggningUpdate.getHandlaggning()))
             .uppgift(toUppgift(apiHandlaggningUpdate.getUppgift()))
             .build();
-
    }
 
    public Handlaggning toHandlaggning(
@@ -390,7 +434,8 @@ public class HandlaggningMapper
             .id(apiHandlaggning.getId())
             .version(apiHandlaggning.getVersion())
             .yrkande(toYrkande(apiHandlaggning.getYrkande()))
-            .processInstansId(apiHandlaggning.getProcessinstansId())
+            .handlaggningIdTyp(apiHandlaggning.getHandlaggningIdTyp())
+            .handlaggningIdVarde(apiHandlaggning.getHandlaggningIdVarde())
             .skapadTS(apiHandlaggning.getSkapadTS())
             .avslutadTS(apiHandlaggning.getAvslutadTS())
             .handlaggningspecifikationId(apiHandlaggning.getHandlaggningspecifikationId())

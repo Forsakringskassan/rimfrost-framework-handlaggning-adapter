@@ -4,21 +4,27 @@ import io.quarkus.test.component.QuarkusComponentTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 import se.fk.rimfrost.framework.handlaggning.adapter.HandlaggningMapper;
+import se.fk.rimfrost.framework.handlaggning.model.HandlaggningUpdate;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableHandlaggning;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableHandlaggningUpdate;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableUppgift;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableYrkande;
-import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.PutHandlaggningRequest;
+import se.fk.rimfrost.framework.handlaggning.model.Uppgift;
+import se.fk.rimfrost.framework.handlaggning.model.Yrkande;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createBeslut;
-import static se.fk.rimfrost.framework.handlaggning.TestData.createIndividYrkandeRoll;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createModelHandlaggning;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createModelHandlaggningUpdate;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createModelYrkande;
-import static se.fk.rimfrost.framework.handlaggning.TestData.createProduceratResultat;
-import static se.fk.rimfrost.framework.handlaggning.TestData.createUnderlag;
+import static se.fk.rimfrost.framework.handlaggning.TestData.createRollIYrkande;
+import static se.fk.rimfrost.framework.handlaggning.TestData.createSakfragaStallningstagande;
+import static se.fk.rimfrost.framework.handlaggning.TestData.createUppgiftsdata;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createUppgift;
+import static se.fk.rimfrost.framework.handlaggning.TestData.createUppgiftsdatakoppling;
 import static se.fk.rimfrost.framework.handlaggning.TestUtils.toApiHandlaggning;
 import static se.fk.rimfrost.framework.handlaggning.TestUtils.toApiHandlaggningUpdate;
 import static se.fk.rimfrost.framework.handlaggning.TestUtils.toApiYrkande;
@@ -29,6 +35,32 @@ public class HandlaggningMapperTest
    @Inject
    HandlaggningMapper handlaggningMapper;
 
+   private static HandlaggningUpdate updateWithYrkande(Yrkande yrkande)
+   {
+      var handlaggningUpdate = createModelHandlaggningUpdate();
+      return ImmutableHandlaggningUpdate.builder()
+            .from(handlaggningUpdate)
+            .handlaggning(ImmutableHandlaggning.builder()
+                  .from(handlaggningUpdate.handlaggning())
+                  .yrkande(yrkande)
+                  .build())
+            .build();
+   }
+
+   private static HandlaggningUpdate updateWithUppgift(Uppgift uppgift)
+   {
+      return ImmutableHandlaggningUpdate.builder()
+            .from(createModelHandlaggningUpdate())
+            .uppgift(uppgift)
+            .build();
+   }
+
+   // ---------------------
+   //
+   // Yrkande
+   //
+   // ---------------------
+
    @Test
    public void should_create_correct_api_yrkande()
    {
@@ -38,22 +70,22 @@ public class HandlaggningMapperTest
    }
 
    @Test
-   public void should_create_correct_api_yrkande_multiple_individ_roller()
+   public void should_create_correct_api_yrkande_multiple_roller_i_yrkande()
    {
       var expectedYrkande = ImmutableYrkande.builder()
             .from(createModelYrkande())
-            .addIndividYrkandeRoller(createIndividYrkandeRoll())
+            .addRollerIYrkande(createRollIYrkande())
             .build();
       var apiYrkande = toApiYrkande(expectedYrkande);
       assertEquals(expectedYrkande, handlaggningMapper.toYrkande(apiYrkande));
    }
 
    @Test
-   public void should_create_correct_api_yrkande_multiple_producerade_resultat()
+   public void should_create_correct_api_yrkande_multiple_sakfragor_stallningstaganden()
    {
       var expectedYrkande = ImmutableYrkande.builder()
             .from(createModelYrkande())
-            .addProduceradeResultat(createProduceratResultat())
+            .addSakfragorStallningstaganden(createSakfragaStallningstagande())
             .build();
       var apiYrkande = toApiYrkande(expectedYrkande);
       assertEquals(expectedYrkande, handlaggningMapper.toYrkande(apiYrkande));
@@ -64,32 +96,28 @@ public class HandlaggningMapperTest
    {
       var expectedYrkande = ImmutableYrkande.builder()
             .from(createModelYrkande())
-            .beslut(createBeslut())
+            .addBeslut(createBeslut())
             .build();
       var apiYrkande = toApiYrkande(expectedYrkande);
       assertEquals(expectedYrkande, handlaggningMapper.toYrkande(apiYrkande));
    }
 
    @Test
-   public void should_create_correct_api_yrkande_null_beslut()
+   public void should_create_correct_api_yrkande_multiple_beslut()
    {
       var expectedYrkande = ImmutableYrkande.builder()
             .from(createModelYrkande())
-            .beslut(null)
+            .addBeslut(createBeslut(), createBeslut())
             .build();
       var apiYrkande = toApiYrkande(expectedYrkande);
       assertEquals(expectedYrkande, handlaggningMapper.toYrkande(apiYrkande));
    }
 
-   @Test
-   public void should_create_correct_api_put_handlaggning_request()
-   {
-      var handlaggningUpdate = createModelHandlaggningUpdate();
-      PutHandlaggningRequest expectedRequest = new PutHandlaggningRequest();
-      expectedRequest.setHandlaggning(toApiHandlaggningUpdate(handlaggningUpdate));
-
-      assertEquals(expectedRequest, handlaggningMapper.toPutHandlaggningRequest(handlaggningUpdate));
-   }
+   // ---------------------
+   //
+   // HandlaggningUpdate to API
+   //
+   // ---------------------
 
    @Test
    public void should_create_correct_api_handlaggning_update()
@@ -99,84 +127,15 @@ public class HandlaggningMapperTest
    }
 
    @Test
-   public void should_create_correct_api_handlaggning_update_null_uppgift()
+   public void should_create_correct_api_handlaggning_update_null_handlaggning_id_varde()
    {
       var handlaggningUpdate = ImmutableHandlaggningUpdate.builder()
             .from(createModelHandlaggningUpdate())
-            .uppgift(null)
+            .handlaggning(ImmutableHandlaggning.builder()
+                  .from(createModelHandlaggning())
+                  .handlaggningIdVarde(null)
+                  .build())
             .build();
-      assertEquals(toApiHandlaggningUpdate(handlaggningUpdate), handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate));
-   }
-
-   @Test
-   public void should_create_correct_api_handlaggning_update_null_processinstans_id()
-   {
-      var handlaggningUpdate = ImmutableHandlaggningUpdate.builder()
-            .from(createModelHandlaggningUpdate())
-            .processInstansId(null)
-            .build();
-      assertEquals(toApiHandlaggningUpdate(handlaggningUpdate), handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate));
-   }
-
-   @Test
-   public void should_create_correct_api_handlaggning_update_multiple_individ_roller()
-   {
-      var handlaggningUpdate = createModelHandlaggningUpdate();
-      var updatedYrkande = ImmutableYrkande.builder()
-            .from(handlaggningUpdate.yrkande())
-            .addIndividYrkandeRoller(createIndividYrkandeRoll())
-            .build();
-      var updatedHandlaggningUpdate = ImmutableHandlaggningUpdate.builder()
-            .from(handlaggningUpdate)
-            .yrkande(updatedYrkande)
-            .build();
-
-      assertEquals(toApiHandlaggningUpdate(updatedHandlaggningUpdate),
-            handlaggningMapper.toApiHandlaggningUpdate(updatedHandlaggningUpdate));
-   }
-
-   @Test
-   public void should_create_correct_api_handlaggning_update_multiple_producerade_resultat()
-   {
-      var handlaggningUpdate = createModelHandlaggningUpdate();
-      var updatedYrkande = ImmutableYrkande.builder()
-            .from(handlaggningUpdate.yrkande())
-            .addProduceradeResultat(createProduceratResultat())
-            .build();
-      var updatedHandlaggningUpdate = ImmutableHandlaggningUpdate.builder()
-            .from(handlaggningUpdate)
-            .yrkande(updatedYrkande)
-            .build();
-
-      assertEquals(toApiHandlaggningUpdate(updatedHandlaggningUpdate),
-            handlaggningMapper.toApiHandlaggningUpdate(updatedHandlaggningUpdate));
-   }
-
-   @Test
-   public void should_create_correct_api_handlaggning_update_null_beslut()
-   {
-      var handlaggningUpdate = createModelHandlaggningUpdate();
-      var updatedYrkande = ImmutableYrkande.builder()
-            .from(handlaggningUpdate.yrkande())
-            .beslut(null)
-            .build();
-      var updatedHandlaggningUpdate = ImmutableHandlaggningUpdate.builder()
-            .from(handlaggningUpdate)
-            .yrkande(updatedYrkande)
-            .build();
-
-      assertEquals(toApiHandlaggningUpdate(updatedHandlaggningUpdate),
-            handlaggningMapper.toApiHandlaggningUpdate(updatedHandlaggningUpdate));
-   }
-
-   @Test
-   public void should_create_correct_api_handlaggning_update_multiple_underlag()
-   {
-      var handlaggningUpdate = ImmutableHandlaggningUpdate.builder()
-            .from(createModelHandlaggningUpdate())
-            .addUnderlag(createUnderlag())
-            .build();
-
       assertEquals(toApiHandlaggningUpdate(handlaggningUpdate), handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate));
    }
 
@@ -185,75 +144,139 @@ public class HandlaggningMapperTest
    {
       var handlaggningUpdate = ImmutableHandlaggningUpdate.builder()
             .from(createModelHandlaggningUpdate())
-            .avslutadTS(null)
+            .handlaggning(ImmutableHandlaggning.builder()
+                  .from(createModelHandlaggning())
+                  .avslutadTS(null)
+                  .build())
             .build();
+      assertEquals(toApiHandlaggningUpdate(handlaggningUpdate), handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate));
+   }
 
+   @Test
+   public void should_create_correct_api_handlaggning_update_uppgift_null()
+   {
+      var handlaggningUpdate = updateWithUppgift(null);
+      var apiHandlaggningUpdate = handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate);
+      assertNull(apiHandlaggningUpdate.getUppgift());
+      assertEquals(toApiHandlaggningUpdate(createModelHandlaggningUpdate()).getHandlaggning(),
+            apiHandlaggningUpdate.getHandlaggning());
+   }
+
+   @Test
+   public void should_create_correct_api_handlaggning_update_multiple_roller_i_yrkande()
+   {
+      var handlaggningUpdate = updateWithYrkande(ImmutableYrkande.builder()
+            .from(createModelYrkande())
+            .addRollerIYrkande(createRollIYrkande())
+            .build());
+      assertEquals(toApiHandlaggningUpdate(handlaggningUpdate), handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate));
+   }
+
+   @Test
+   public void should_create_correct_api_handlaggning_update_multiple_sakfragor_stallningstaganden()
+   {
+      var handlaggningUpdate = updateWithYrkande(ImmutableYrkande.builder()
+            .from(createModelYrkande())
+            .addSakfragorStallningstaganden(createSakfragaStallningstagande())
+            .build());
+      assertEquals(toApiHandlaggningUpdate(handlaggningUpdate), handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate));
+   }
+
+   @Test
+   public void should_create_correct_api_handlaggning_update_with_beslut()
+   {
+      var handlaggningUpdate = updateWithYrkande(ImmutableYrkande.builder()
+            .from(createModelYrkande())
+            .addBeslut(createBeslut())
+            .build());
+      assertEquals(toApiHandlaggningUpdate(handlaggningUpdate), handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate));
+   }
+
+   @Test
+   public void should_create_correct_api_handlaggning_update_multiple_underlag()
+   {
+      var handlaggningUpdate = updateWithUppgift(ImmutableUppgift.builder()
+            .from(createUppgift())
+            .addUnderlag(createUppgiftsdata())
+            .build());
+      assertEquals(toApiHandlaggningUpdate(handlaggningUpdate), handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate));
+   }
+
+   @Test
+   public void should_create_correct_api_handlaggning_update_multiple_resultat()
+   {
+      var handlaggningUpdate = updateWithUppgift(ImmutableUppgift.builder()
+            .from(createUppgift())
+            .addResultat(createUppgiftsdatakoppling())
+            .build());
       assertEquals(toApiHandlaggningUpdate(handlaggningUpdate), handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate));
    }
 
    @Test
    public void should_create_correct_api_handlaggning_update_uppgift_utford_ts_null()
    {
-      var uppgift = ImmutableUppgift.builder()
+      var handlaggningUpdate = updateWithUppgift(ImmutableUppgift.builder()
             .from(createUppgift())
-            .utfordTs(null)
-            .build();
-
-      var handlaggningUpdate = ImmutableHandlaggningUpdate.builder()
-            .from(createModelHandlaggningUpdate())
-            .uppgift(uppgift)
-            .build();
-
+            .utfordTS(null)
+            .build());
       assertEquals(toApiHandlaggningUpdate(handlaggningUpdate), handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate));
    }
 
    @Test
-   public void should_create_correct_api_handlaggning_update_uppgift_planerad_ts_null()
+   public void should_create_correct_api_handlaggning_update_uppgift_planerad_till_ts_null()
    {
-      var uppgift = ImmutableUppgift.builder()
+      var handlaggningUpdate = updateWithUppgift(ImmutableUppgift.builder()
             .from(createUppgift())
-            .planeradTs(null)
-            .build();
-
-      var handlaggningUpdate = ImmutableHandlaggningUpdate.builder()
-            .from(createModelHandlaggningUpdate())
-            .uppgift(uppgift)
-            .build();
-
+            .planeradTillTS(null)
+            .build());
       assertEquals(toApiHandlaggningUpdate(handlaggningUpdate), handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate));
    }
 
    @Test
-   public void should_create_correct_api_handlaggning_update_uppgift_utforar_id_null()
+   public void should_create_correct_api_handlaggning_update_uppgift_utforare_null()
    {
-      var uppgift = ImmutableUppgift.builder()
+      var handlaggningUpdate = updateWithUppgift(ImmutableUppgift.builder()
             .from(createUppgift())
-            .utforarId(null)
-            .build();
-
-      var handlaggningUpdate = ImmutableHandlaggningUpdate.builder()
-            .from(createModelHandlaggningUpdate())
-            .uppgift(uppgift)
-            .build();
-
+            .utforare(null)
+            .build());
       assertEquals(toApiHandlaggningUpdate(handlaggningUpdate), handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate));
    }
 
    @Test
    public void should_create_correct_api_handlaggning_update_uppgift_uppgift_status_null()
    {
-      var uppgift = ImmutableUppgift.builder()
+      var handlaggningUpdate = updateWithUppgift(ImmutableUppgift.builder()
             .from(createUppgift())
             .uppgiftStatus(null)
-            .build();
-
-      var handlaggningUpdate = ImmutableHandlaggningUpdate.builder()
-            .from(createModelHandlaggningUpdate())
-            .uppgift(uppgift)
-            .build();
-
+            .build());
       assertEquals(toApiHandlaggningUpdate(handlaggningUpdate), handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate));
    }
+
+   @Test
+   public void should_create_correct_api_handlaggning_update_uppgift_kommentar_null()
+   {
+      var handlaggningUpdate = updateWithUppgift(ImmutableUppgift.builder()
+            .from(createUppgift())
+            .kommentar(null)
+            .build());
+      assertEquals(toApiHandlaggningUpdate(handlaggningUpdate), handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate));
+   }
+
+   @Test
+   public void should_create_correct_api_handlaggning_update_uppgift_regelutfall_null()
+   {
+      var handlaggningUpdate = updateWithUppgift(ImmutableUppgift.builder()
+            .from(createUppgift())
+            .regelutfall(null)
+            .build());
+      assertEquals(toApiHandlaggningUpdate(handlaggningUpdate), handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate));
+   }
+
+   // ---------------------
+   //
+   // HandlaggningUpdate to model
+   //
+   // ---------------------
 
    @Test
    public void should_create_correct_model_handlaggning_update()
@@ -263,84 +286,15 @@ public class HandlaggningMapperTest
    }
 
    @Test
-   public void should_create_correct_model_handlaggning_update_null_uppgift()
+   public void should_create_correct_model_handlaggning_update_null_handlaggning_id_varde()
    {
       var handlaggningUpdate = ImmutableHandlaggningUpdate.builder()
             .from(createModelHandlaggningUpdate())
-            .uppgift(null)
+            .handlaggning(ImmutableHandlaggning.builder()
+                  .from(createModelHandlaggning())
+                  .handlaggningIdVarde(null)
+                  .build())
             .build();
-      assertEquals(handlaggningUpdate, handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(handlaggningUpdate)));
-   }
-
-   @Test
-   public void should_create_correct_model_handlaggning_update_null_processinstans_id()
-   {
-      var handlaggningUpdate = ImmutableHandlaggningUpdate.builder()
-            .from(createModelHandlaggningUpdate())
-            .processInstansId(null)
-            .build();
-      assertEquals(handlaggningUpdate, handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(handlaggningUpdate)));
-   }
-
-   @Test
-   public void should_create_correct_model_handlaggning_update_multiple_individ_roller()
-   {
-      var handlaggningUpdate = createModelHandlaggningUpdate();
-      var updatedYrkande = ImmutableYrkande.builder()
-            .from(handlaggningUpdate.yrkande())
-            .addIndividYrkandeRoller(createIndividYrkandeRoll())
-            .build();
-      var updatedHandlaggningUpdate = ImmutableHandlaggningUpdate.builder()
-            .from(handlaggningUpdate)
-            .yrkande(updatedYrkande)
-            .build();
-
-      assertEquals(updatedHandlaggningUpdate,
-            handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(updatedHandlaggningUpdate)));
-   }
-
-   @Test
-   public void should_create_correct_model_handlaggning_update_multiple_producerade_resultat()
-   {
-      var handlaggningUpdate = createModelHandlaggningUpdate();
-      var updatedYrkande = ImmutableYrkande.builder()
-            .from(handlaggningUpdate.yrkande())
-            .addProduceradeResultat(createProduceratResultat())
-            .build();
-      var updatedHandlaggningUpdate = ImmutableHandlaggningUpdate.builder()
-            .from(handlaggningUpdate)
-            .yrkande(updatedYrkande)
-            .build();
-
-      assertEquals(updatedHandlaggningUpdate,
-            handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(updatedHandlaggningUpdate)));
-   }
-
-   @Test
-   public void should_create_correct_model_handlaggning_update_null_beslut()
-   {
-      var handlaggningUpdate = createModelHandlaggningUpdate();
-      var updatedYrkande = ImmutableYrkande.builder()
-            .from(handlaggningUpdate.yrkande())
-            .beslut(null)
-            .build();
-      var updatedHandlaggningUpdate = ImmutableHandlaggningUpdate.builder()
-            .from(handlaggningUpdate)
-            .yrkande(updatedYrkande)
-            .build();
-
-      assertEquals(updatedHandlaggningUpdate,
-            handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(updatedHandlaggningUpdate)));
-   }
-
-   @Test
-   public void should_create_correct_model_handlaggning_update_multiple_underlag()
-   {
-      var handlaggningUpdate = ImmutableHandlaggningUpdate.builder()
-            .from(createModelHandlaggningUpdate())
-            .addUnderlag(createUnderlag())
-            .build();
-
       assertEquals(handlaggningUpdate, handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(handlaggningUpdate)));
    }
 
@@ -349,113 +303,176 @@ public class HandlaggningMapperTest
    {
       var handlaggningUpdate = ImmutableHandlaggningUpdate.builder()
             .from(createModelHandlaggningUpdate())
-            .avslutadTS(null)
+            .handlaggning(ImmutableHandlaggning.builder()
+                  .from(createModelHandlaggning())
+                  .avslutadTS(null)
+                  .build())
             .build();
-
       assertEquals(handlaggningUpdate, handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(handlaggningUpdate)));
+   }
+
+   @Test
+   public void should_create_correct_model_handlaggning_update_multiple_roller_i_yrkande()
+   {
+      var handlaggningUpdate = updateWithYrkande(ImmutableYrkande.builder()
+            .from(createModelYrkande())
+            .addRollerIYrkande(createRollIYrkande())
+            .build());
+      assertEquals(handlaggningUpdate, handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(handlaggningUpdate)));
+   }
+
+   @Test
+   public void should_create_correct_model_handlaggning_update_multiple_sakfragor_stallningstaganden()
+   {
+      var handlaggningUpdate = updateWithYrkande(ImmutableYrkande.builder()
+            .from(createModelYrkande())
+            .addSakfragorStallningstaganden(createSakfragaStallningstagande())
+            .build());
+      assertEquals(handlaggningUpdate, handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(handlaggningUpdate)));
+   }
+
+   @Test
+   public void should_create_correct_model_handlaggning_update_with_beslut()
+   {
+      var handlaggningUpdate = updateWithYrkande(ImmutableYrkande.builder()
+            .from(createModelYrkande())
+            .addBeslut(createBeslut())
+            .build());
+      assertEquals(handlaggningUpdate, handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(handlaggningUpdate)));
+   }
+
+   @Test
+   public void should_create_correct_model_handlaggning_update_multiple_underlag()
+   {
+      var handlaggningUpdate = updateWithUppgift(ImmutableUppgift.builder()
+            .from(createUppgift())
+            .addUnderlag(createUppgiftsdata())
+            .build());
+      assertEquals(handlaggningUpdate, handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(handlaggningUpdate)));
+   }
+
+   @Test
+   public void should_create_correct_model_handlaggning_update_multiple_resultat()
+   {
+      var handlaggningUpdate = updateWithUppgift(ImmutableUppgift.builder()
+            .from(createUppgift())
+            .addResultat(createUppgiftsdatakoppling())
+            .build());
+      assertEquals(handlaggningUpdate, handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(handlaggningUpdate)));
+   }
+
+   @Test
+   public void should_create_correct_model_handlaggning_update_missing_underlag_and_resultat()
+   {
+      var expectedHandlaggningUpdate = updateWithUppgift(ImmutableUppgift.builder()
+            .from(createUppgift())
+            .underlag(List.of())
+            .resultat(List.of())
+            .build());
+      var apiHandlaggningUpdate = toApiHandlaggningUpdate(expectedHandlaggningUpdate);
+      apiHandlaggningUpdate.getUppgift().setUnderlag(null);
+      apiHandlaggningUpdate.getUppgift().setResultat(null);
+      assertEquals(expectedHandlaggningUpdate, handlaggningMapper.toHandlaggningUpdate(apiHandlaggningUpdate));
    }
 
    @Test
    public void should_create_correct_model_handlaggning_update_uppgift_utford_ts_null()
    {
-      var uppgift = ImmutableUppgift.builder()
+      var handlaggningUpdate = updateWithUppgift(ImmutableUppgift.builder()
             .from(createUppgift())
-            .utfordTs(null)
-            .build();
-
-      var handlaggningUpdate = ImmutableHandlaggningUpdate.builder()
-            .from(createModelHandlaggningUpdate())
-            .uppgift(uppgift)
-            .build();
-
+            .utfordTS(null)
+            .build());
       assertEquals(handlaggningUpdate, handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(handlaggningUpdate)));
    }
 
    @Test
-   public void should_create_correct_model_handlaggning_update_uppgift_planerad_ts_null()
+   public void should_create_correct_model_handlaggning_update_uppgift_planerad_till_ts_null()
    {
-      var uppgift = ImmutableUppgift.builder()
+      var handlaggningUpdate = updateWithUppgift(ImmutableUppgift.builder()
             .from(createUppgift())
-            .planeradTs(null)
-            .build();
-
-      var handlaggningUpdate = ImmutableHandlaggningUpdate.builder()
-            .from(createModelHandlaggningUpdate())
-            .uppgift(uppgift)
-            .build();
-
+            .planeradTillTS(null)
+            .build());
       assertEquals(handlaggningUpdate, handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(handlaggningUpdate)));
    }
 
    @Test
-   public void should_create_correct_model_handlaggning_update_uppgift_utforar_id_null()
+   public void should_create_correct_model_handlaggning_update_uppgift_utforare_null()
    {
-      var uppgift = ImmutableUppgift.builder()
+      var handlaggningUpdate = updateWithUppgift(ImmutableUppgift.builder()
             .from(createUppgift())
-            .utforarId(null)
-            .build();
-
-      var handlaggningUpdate = ImmutableHandlaggningUpdate.builder()
-            .from(createModelHandlaggningUpdate())
-            .uppgift(uppgift)
-            .build();
-
+            .utforare(null)
+            .build());
       assertEquals(handlaggningUpdate, handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(handlaggningUpdate)));
    }
 
    @Test
    public void should_create_correct_model_handlaggning_update_uppgift_uppgift_status_null()
    {
-      var uppgift = ImmutableUppgift.builder()
+      var handlaggningUpdate = updateWithUppgift(ImmutableUppgift.builder()
             .from(createUppgift())
             .uppgiftStatus(null)
-            .build();
-
-      var handlaggningUpdate = ImmutableHandlaggningUpdate.builder()
-            .from(createModelHandlaggningUpdate())
-            .uppgift(uppgift)
-            .build();
-
+            .build());
       assertEquals(handlaggningUpdate, handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(handlaggningUpdate)));
    }
+
+   @Test
+   public void should_create_correct_model_handlaggning_update_uppgift_kommentar_null()
+   {
+      var handlaggningUpdate = updateWithUppgift(ImmutableUppgift.builder()
+            .from(createUppgift())
+            .kommentar(null)
+            .build());
+      assertEquals(handlaggningUpdate, handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(handlaggningUpdate)));
+   }
+
+   @Test
+   public void should_create_correct_model_handlaggning_update_uppgift_regelutfall_null()
+   {
+      var handlaggningUpdate = updateWithUppgift(ImmutableUppgift.builder()
+            .from(createUppgift())
+            .regelutfall(null)
+            .build());
+      assertEquals(handlaggningUpdate, handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(handlaggningUpdate)));
+   }
+
+   // ---------------------
+   //
+   // Handlaggning to model
+   //
+   // ---------------------
 
    @Test
    public void should_create_correct_model_handlaggning()
    {
       var handlaggning = createModelHandlaggning();
-      ;
       assertEquals(handlaggning, handlaggningMapper.toHandlaggning(toApiHandlaggning(handlaggning)));
    }
 
    @Test
-   public void should_create_correct_model_handlaggning_multiple_individ_roller()
+   public void should_create_correct_model_handlaggning_multiple_roller_i_yrkande()
    {
       var handlaggning = createModelHandlaggning();
-      var updatedYrkande = ImmutableYrkande.builder()
-            .from(handlaggning.yrkande())
-            .addIndividYrkandeRoller(createIndividYrkandeRoll())
-            .build();
       var updatedHandlaggning = ImmutableHandlaggning.builder()
             .from(handlaggning)
-            .yrkande(updatedYrkande)
+            .yrkande(ImmutableYrkande.builder()
+                  .from(handlaggning.yrkande())
+                  .addRollerIYrkande(createRollIYrkande())
+                  .build())
             .build();
-
       assertEquals(updatedHandlaggning, handlaggningMapper.toHandlaggning(toApiHandlaggning(updatedHandlaggning)));
    }
 
    @Test
-   public void should_create_correct_model_handlaggning_multiple_producerade_resultat()
+   public void should_create_correct_model_handlaggning_multiple_sakfragor_stallningstaganden()
    {
       var handlaggning = createModelHandlaggning();
-      var updatedYrkande = ImmutableYrkande.builder()
-            .from(handlaggning.yrkande())
-            .addProduceradeResultat(createProduceratResultat())
-            .build();
       var updatedHandlaggning = ImmutableHandlaggning.builder()
             .from(handlaggning)
-            .yrkande(updatedYrkande)
+            .yrkande(ImmutableYrkande.builder()
+                  .from(handlaggning.yrkande())
+                  .addSakfragorStallningstaganden(createSakfragaStallningstagande())
+                  .build())
             .build();
-
       assertEquals(updatedHandlaggning, handlaggningMapper.toHandlaggning(toApiHandlaggning(updatedHandlaggning)));
    }
 
@@ -463,31 +480,13 @@ public class HandlaggningMapperTest
    public void should_create_correct_model_handlaggning_with_beslut()
    {
       var handlaggning = createModelHandlaggning();
-      var updatedYrkande = ImmutableYrkande.builder()
-            .from(handlaggning.yrkande())
-            .beslut(createBeslut())
-            .build();
       var updatedHandlaggning = ImmutableHandlaggning.builder()
             .from(handlaggning)
-            .yrkande(updatedYrkande)
+            .yrkande(ImmutableYrkande.builder()
+                  .from(handlaggning.yrkande())
+                  .addBeslut(createBeslut())
+                  .build())
             .build();
-
-      assertEquals(updatedHandlaggning, handlaggningMapper.toHandlaggning(toApiHandlaggning(updatedHandlaggning)));
-   }
-
-   @Test
-   public void should_create_correct_model_handlaggning_null_beslut()
-   {
-      var handlaggning = createModelHandlaggning();
-      var updatedYrkande = ImmutableYrkande.builder()
-            .from(handlaggning.yrkande())
-            .beslut(null)
-            .build();
-      var updatedHandlaggning = ImmutableHandlaggning.builder()
-            .from(handlaggning)
-            .yrkande(updatedYrkande)
-            .build();
-
       assertEquals(updatedHandlaggning, handlaggningMapper.toHandlaggning(toApiHandlaggning(updatedHandlaggning)));
    }
 
@@ -498,7 +497,16 @@ public class HandlaggningMapperTest
             .from(createModelHandlaggning())
             .avslutadTS(null)
             .build();
+      assertEquals(handlaggning, handlaggningMapper.toHandlaggning(toApiHandlaggning(handlaggning)));
+   }
 
+   @Test
+   public void should_create_correct_model_handlaggning_handlaggning_id_varde_null()
+   {
+      var handlaggning = ImmutableHandlaggning.builder()
+            .from(createModelHandlaggning())
+            .handlaggningIdVarde(null)
+            .build();
       assertEquals(handlaggning, handlaggningMapper.toHandlaggning(toApiHandlaggning(handlaggning)));
    }
 }

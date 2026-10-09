@@ -3,11 +3,9 @@ package se.fk.rimfrost.framework.handlaggning.model;
 import org.immutables.value.Value;
 
 @Value.Immutable
-public interface Underlag
+public interface Uppgiftsdatakoppling
 {
-   String typ();
+   String informationsobjektId();
 
-   Integer version();
-
-   String data();
+   int informationsobjektversion();
 }

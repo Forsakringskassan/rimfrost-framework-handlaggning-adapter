@@ -17,6 +17,6 @@ public interface Beslutsrad
 
    String avslutsTyp();
 
-   List<ProduceratResultatRef> produceradeResultatRef();
+   List<SakfragaStallningstagandeRef> sakfragorStallningstaganden();
 
 }

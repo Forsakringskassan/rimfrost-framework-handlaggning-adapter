@@ -5,24 +5,19 @@ import se.fk.rimfrost.framework.handlaggning.model.Beslutsrad;
 import se.fk.rimfrost.framework.handlaggning.model.Handlaggning;
 import se.fk.rimfrost.framework.handlaggning.model.HandlaggningUpdate;
 import se.fk.rimfrost.framework.handlaggning.model.Idtyp;
-import se.fk.rimfrost.framework.handlaggning.model.IndividYrkandeRoll;
-import se.fk.rimfrost.framework.handlaggning.model.ProduceratResultat;
-import se.fk.rimfrost.framework.handlaggning.model.ProduceratResultatRef;
-import se.fk.rimfrost.framework.handlaggning.model.Underlag;
+import se.fk.rimfrost.framework.handlaggning.model.Regelutfall;
+import se.fk.rimfrost.framework.handlaggning.model.RollIYrkande;
+import se.fk.rimfrost.framework.handlaggning.model.SakfragaStallningstagande;
+import se.fk.rimfrost.framework.handlaggning.model.SakfragaStallningstagandeRef;
 import se.fk.rimfrost.framework.handlaggning.model.Uppgift;
 import se.fk.rimfrost.framework.handlaggning.model.UppgiftSpecifikation;
+import se.fk.rimfrost.framework.handlaggning.model.Uppgiftsdata;
+import se.fk.rimfrost.framework.handlaggning.model.Uppgiftsdatakoppling;
 import se.fk.rimfrost.framework.handlaggning.model.Yrkande;
-import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.PutHandlaggningRequest;
+import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.SakfragaStallningstagandeContainer;
 
 public class TestUtils
 {
-   public static PutHandlaggningRequest toApiPutHandlaggningRequest(HandlaggningUpdate handlaggningUpdate)
-   {
-      PutHandlaggningRequest request = new PutHandlaggningRequest();
-      request.setHandlaggning(toApiHandlaggningUpdate(handlaggningUpdate));
-      return request;
-   }
-
    public static se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Handlaggning toApiHandlaggning(
          Handlaggning modelHandlaggning)
    {
@@ -30,9 +25,10 @@ public class TestUtils
       handlaggning.setId(modelHandlaggning.id());
       handlaggning.setVersion(modelHandlaggning.version());
       handlaggning.setYrkande(toApiYrkande(modelHandlaggning.yrkande()));
+      handlaggning.setHandlaggningIdTyp(modelHandlaggning.handlaggningIdTyp());
+      handlaggning.setHandlaggningIdVarde(modelHandlaggning.handlaggningIdVarde());
       handlaggning.setSkapadTS(modelHandlaggning.skapadTS());
       handlaggning.setAvslutadTS(modelHandlaggning.avslutadTS());
-      handlaggning.setProcessinstansId(modelHandlaggning.processInstansId());
       handlaggning.setHandlaggningspecifikationId(modelHandlaggning.handlaggningspecifikationId());
       return handlaggning;
    }
@@ -41,14 +37,7 @@ public class TestUtils
          HandlaggningUpdate handlaggningUpdate)
    {
       se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.HandlaggningUpdate update = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.HandlaggningUpdate();
-      update.setId(handlaggningUpdate.id());
-      update.setVersion(handlaggningUpdate.version());
-      update.setYrkande(toApiYrkande(handlaggningUpdate.yrkande()));
-      update.setProcessinstansId(handlaggningUpdate.processInstansId());
-      update.setSkapadTS(handlaggningUpdate.skapadTS());
-      update.setAvslutadTS(handlaggningUpdate.avslutadTS());
-      update.setHandlaggningspecifikationId(handlaggningUpdate.handlaggningspecifikationId());
-      update.setUnderlag(handlaggningUpdate.underlag().stream().map(TestUtils::toApiUnderlag).toList());
+      update.setHandlaggning(toApiHandlaggning(handlaggningUpdate.handlaggning()));
       update.setUppgift(toApiUppgift(handlaggningUpdate.uppgift()));
       return update;
    }
@@ -58,27 +47,28 @@ public class TestUtils
       se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Yrkande yrkande = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Yrkande();
       yrkande.setId(modelYrkande.id());
       yrkande.setVersion(modelYrkande.version());
-      yrkande.setErbjudandeId(modelYrkande.erbjudandeId());
+      yrkande.setIngangtypId(modelYrkande.ingangtypId());
       yrkande.setYrkandedatum(modelYrkande.yrkandeDatum());
       yrkande.setYrkandestatus(modelYrkande.yrkandeStatus());
       yrkande.setYrkandeFrom(modelYrkande.yrkandeFrom());
       yrkande.setYrkandeTom(modelYrkande.yrkandeTom());
       yrkande.setAvsikt(modelYrkande.avsikt());
-      yrkande.setIndividYrkandeRoller(
-            modelYrkande.individYrkandeRoller().stream().map(TestUtils::toApiIndividYrkandeRoll).toList());
-      yrkande
-            .setProduceradeResultat(modelYrkande.produceradeResultat().stream().map(TestUtils::toApiProduceratResultat).toList());
-      yrkande.setBeslut(toApiBeslut(modelYrkande.beslut()));
+      yrkande.setRollerIYrkande(modelYrkande.rollerIYrkande().stream().map(TestUtils::toApiRollIYrkande).toList());
+      yrkande.setSakfragorStallningstaganden(
+            modelYrkande.sakfragorStallningstaganden().stream().map(TestUtils::toApiSakfragaStallningstagande).toList());
+      yrkande.setBeslut(modelYrkande.beslut().stream().map(TestUtils::toApiBeslut).toList());
       return yrkande;
    }
 
-   private static se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.IndividYrkandeRoll toApiIndividYrkandeRoll(
-         IndividYrkandeRoll modelIndividYrkandeRoll)
+   private static se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.RollIYrkande toApiRollIYrkande(
+         RollIYrkande modelRollIYrkande)
    {
-      se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.IndividYrkandeRoll individYrkandeRoll = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.IndividYrkandeRoll();
-      individYrkandeRoll.setIndivid(toApiIdTyp(modelIndividYrkandeRoll.individ()));
-      individYrkandeRoll.setYrkandeRollId(modelIndividYrkandeRoll.yrkandeRollId());
-      return individYrkandeRoll;
+      se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.RollIYrkande rollIYrkande = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.RollIYrkande();
+      rollIYrkande.setId(modelRollIYrkande.id());
+      rollIYrkande.setIndivid(toApiIdTyp(modelRollIYrkande.individ()));
+      rollIYrkande.setYrkandeRollId(modelRollIYrkande.yrkandeRollId());
+      rollIYrkande.setAvserYrkande(modelRollIYrkande.avserYrkande());
+      return rollIYrkande;
    }
 
    private static se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Idtyp toApiIdTyp(Idtyp modelIdtyp)
@@ -94,28 +84,18 @@ public class TestUtils
       return idTyp;
    }
 
-   private static se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.ProduceratResultat toApiProduceratResultat(
-         ProduceratResultat modelProduceratResultat)
+   private static SakfragaStallningstagandeContainer toApiSakfragaStallningstagande(
+         SakfragaStallningstagande modelSakfragaStallningstagande)
    {
-      se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.ProduceratResultat produceratResultat = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.ProduceratResultat();
-      produceratResultat.setId(modelProduceratResultat.id());
-      produceratResultat.setVersion(modelProduceratResultat.version());
-      produceratResultat.setFrom(modelProduceratResultat.resultatFrom());
-      produceratResultat.setTom(modelProduceratResultat.resultatTom());
-      produceratResultat.setYrkandestatus(modelProduceratResultat.yrkandeStatus());
-      produceratResultat.setAvslagsanledning(modelProduceratResultat.avslagsanledning());
-      produceratResultat.setTyp(modelProduceratResultat.typ());
-      produceratResultat.setData(modelProduceratResultat.data());
-      return produceratResultat;
+      SakfragaStallningstagandeContainer sakfragaStallningstagande = new SakfragaStallningstagandeContainer();
+      sakfragaStallningstagande.setId(modelSakfragaStallningstagande.id());
+      sakfragaStallningstagande.setObjektTypId(modelSakfragaStallningstagande.objektTypId());
+      sakfragaStallningstagande.setData(modelSakfragaStallningstagande.data());
+      return sakfragaStallningstagande;
    }
 
    private static se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Beslut toApiBeslut(Beslut modelBeslut)
    {
-      if (modelBeslut == null)
-      {
-         return null;
-      }
-
       se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Beslut beslut = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Beslut();
       beslut.setId(modelBeslut.id());
       beslut.setVersion(modelBeslut.version());
@@ -134,47 +114,74 @@ public class TestUtils
       beslutsrad.setAvslutsTyp(modelBeslutsrad.avslutsTyp());
       beslutsrad.setBeslutsTyp(modelBeslutsrad.beslutsTyp());
       beslutsrad.setBeslutsUtfall(modelBeslutsrad.beslutsUtfall());
-      beslutsrad.setProduceradeResultatRef(
-            modelBeslutsrad.produceradeResultatRef().stream().map(TestUtils::toApiProduceratResultatRef).toList());
+      beslutsrad.setSakfragorStallningstaganden(
+            modelBeslutsrad.sakfragorStallningstaganden().stream().map(TestUtils::toApiSakfragaStallningstagandeRef).toList());
       return beslutsrad;
    }
 
-   private static se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.ProduceratResultatRef toApiProduceratResultatRef(
-         ProduceratResultatRef modelProduceratResultatRef)
+   private static se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.SakfragaStallningstagandeRef toApiSakfragaStallningstagandeRef(
+         SakfragaStallningstagandeRef modelSakfragaStallningstagandeRef)
    {
-      se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.ProduceratResultatRef produceratResultatRef = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.ProduceratResultatRef();
-      produceratResultatRef.setId(modelProduceratResultatRef.id());
-      produceratResultatRef.setVersion(modelProduceratResultatRef.version());
-      return produceratResultatRef;
+      se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.SakfragaStallningstagandeRef sakfragaStallningstagandeRef = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.SakfragaStallningstagandeRef();
+      sakfragaStallningstagandeRef.setId(modelSakfragaStallningstagandeRef.id());
+      sakfragaStallningstagandeRef.setVersion(modelSakfragaStallningstagandeRef.version());
+      return sakfragaStallningstagandeRef;
    }
 
-   private static se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Underlag toApiUnderlag(Underlag modelUnderlag)
+   private static se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdata toApiUppgiftsdata(
+         Uppgiftsdata modelUppgiftsdata)
    {
-      se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Underlag underlag = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Underlag();
-      underlag.setTyp(modelUnderlag.typ());
-      underlag.setData(modelUnderlag.data());
-      underlag.setVersion(modelUnderlag.version());
-      return underlag;
+      se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.UppgiftsdataUnderlag kopia = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.UppgiftsdataUnderlag();
+      kopia.setTyp(se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.UppgiftsdataUnderlag.TypEnum.KOPIA);
+      kopia.setInformationsobjektId(modelUppgiftsdata.informationsobjektId());
+      kopia.setInformationsobjektversion(modelUppgiftsdata.informationsobjektversion());
+      kopia.setInformationsobjekttyp(modelUppgiftsdata.informationsobjekttyp());
+      kopia.setData(modelUppgiftsdata.data());
+      se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdata uppgiftsdata = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdata();
+      uppgiftsdata.setUnderlag(kopia);
+      return uppgiftsdata;
    }
 
-   private static se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgift toApiUppgift(Uppgift modelUppgift)
+   private static se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdatakoppling toApiUppgiftsdatakoppling(
+         Uppgiftsdatakoppling modelUppgiftsdatakoppling)
    {
-      if (modelUppgift == null)
+      se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdatakoppling uppgiftsdatakoppling = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdatakoppling();
+      uppgiftsdatakoppling.setTyp(se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdatakoppling.TypEnum.KOPPLING);
+      uppgiftsdatakoppling.setInformationsobjektId(modelUppgiftsdatakoppling.informationsobjektId());
+      uppgiftsdatakoppling.setInformationsobjektversion(modelUppgiftsdatakoppling.informationsobjektversion());
+      return uppgiftsdatakoppling;
+   }
+
+   private static se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Regelutfall toApiRegelutfall(
+         Regelutfall modelRegelutfall)
+   {
+      if (modelRegelutfall == null)
       {
          return null;
       }
 
+      se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Regelutfall regelutfall = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Regelutfall();
+      regelutfall.setVarde(modelRegelutfall.varde());
+      return regelutfall;
+   }
+
+   public static se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgift toApiUppgift(Uppgift modelUppgift)
+   {
       se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgift uppgift = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgift();
       uppgift.setId(modelUppgift.id());
       uppgift.setVersion(modelUppgift.version());
-      uppgift.setSkapadTs(modelUppgift.skapadTs());
-      uppgift.setUtfordTs(modelUppgift.utfordTs());
-      uppgift.setPlaneradTs(modelUppgift.planeradTs());
-      uppgift.setUtforarId(toApiIdTyp(modelUppgift.utforarId()));
+      uppgift.setSkapadTS(modelUppgift.skapadTS());
+      uppgift.setUtfordTS(modelUppgift.utfordTS());
+      uppgift.setPlaneradTillTS(modelUppgift.planeradTillTS());
+      uppgift.setUtforare(toApiIdTyp(modelUppgift.utforare()));
       uppgift.setAktivitetId(modelUppgift.aktivitetId());
       uppgift.setUppgiftspecifikation(toApiUppgiftSpecifikation(modelUppgift.uppgiftSpecifikation()));
       uppgift.setUppgiftStatus(modelUppgift.uppgiftStatus());
+      uppgift.setKommentar(modelUppgift.kommentar());
       uppgift.setFsSAinformation(modelUppgift.fSSAinformation());
+      uppgift.setRegelutfall(toApiRegelutfall(modelUppgift.regelutfall()));
+      uppgift.setUnderlag(modelUppgift.underlag().stream().map(TestUtils::toApiUppgiftsdata).toList());
+      uppgift.setResultat(modelUppgift.resultat().stream().map(TestUtils::toApiUppgiftsdatakoppling).toList());
       return uppgift;
    }
 

@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createModelHandlaggning;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createModelHandlaggningUpdate;
-import static se.fk.rimfrost.framework.handlaggning.TestUtils.toApiPutHandlaggningRequest;
+import static se.fk.rimfrost.framework.handlaggning.TestUtils.toApiHandlaggningUpdate;
 
 @QuarkusComponentTest(useSystemConfigSources = true)
 public class HandlaggningAdapterTest
@@ -120,8 +120,8 @@ public class HandlaggningAdapterTest
       server.stubFor(WireMock.put(WireMock.urlPathMatching("/handlaggning/.+"))
             .willReturn(WireMock.aResponse().withStatus(400)));
       var handlaggningUpdate = createModelHandlaggningUpdate();
-      Mockito.when(handlaggningMapper.toPutHandlaggningRequest(handlaggningUpdate))
-            .thenReturn(toApiPutHandlaggningRequest(handlaggningUpdate));
+      Mockito.when(handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate))
+            .thenReturn(toApiHandlaggningUpdate(handlaggningUpdate));
       var exception = assertThrows(HandlaggningException.class, () -> handlaggningAdapter.updateHandlaggning(handlaggningUpdate));
       assertEquals(HandlaggningException.ErrorType.BAD_REQUEST, exception.getErrorType());
    }
@@ -133,8 +133,8 @@ public class HandlaggningAdapterTest
       server.stubFor(WireMock.put(WireMock.urlPathMatching("/handlaggning/.+"))
             .willReturn(WireMock.aResponse().withFault(Fault.CONNECTION_RESET_BY_PEER)));
       var handlaggningUpdate = createModelHandlaggningUpdate();
-      Mockito.when(handlaggningMapper.toPutHandlaggningRequest(handlaggningUpdate))
-            .thenReturn(toApiPutHandlaggningRequest(handlaggningUpdate));
+      Mockito.when(handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate))
+            .thenReturn(toApiHandlaggningUpdate(handlaggningUpdate));
       var exception = assertThrows(HandlaggningException.class, () -> handlaggningAdapter.updateHandlaggning(handlaggningUpdate));
       assertEquals(HandlaggningException.ErrorType.SERVICE_UNAVAILABLE, exception.getErrorType());
    }
@@ -146,8 +146,8 @@ public class HandlaggningAdapterTest
       server.stubFor(WireMock.put(WireMock.urlPathMatching("/handlaggning/.+"))
             .willReturn(WireMock.aResponse().withStatus(500)));
       var handlaggningUpdate = createModelHandlaggningUpdate();
-      Mockito.when(handlaggningMapper.toPutHandlaggningRequest(handlaggningUpdate))
-            .thenReturn(toApiPutHandlaggningRequest(handlaggningUpdate));
+      Mockito.when(handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate))
+            .thenReturn(toApiHandlaggningUpdate(handlaggningUpdate));
       var exception = assertThrows(HandlaggningException.class, () -> handlaggningAdapter.updateHandlaggning(handlaggningUpdate));
       assertEquals(HandlaggningException.ErrorType.UNEXPECTED_ERROR, exception.getErrorType());
    }
@@ -159,8 +159,8 @@ public class HandlaggningAdapterTest
       server.stubFor(WireMock.put(WireMock.urlPathMatching("/handlaggning/.+"))
             .willReturn(WireMock.aResponse().withStatus(409)));
       var handlaggningUpdate = createModelHandlaggningUpdate();
-      Mockito.when(handlaggningMapper.toPutHandlaggningRequest(handlaggningUpdate))
-            .thenReturn(toApiPutHandlaggningRequest(handlaggningUpdate));
+      Mockito.when(handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate))
+            .thenReturn(toApiHandlaggningUpdate(handlaggningUpdate));
       var exception = assertThrows(HandlaggningException.class, () -> handlaggningAdapter.updateHandlaggning(handlaggningUpdate));
       assertEquals(HandlaggningException.ErrorType.CONFLICT, exception.getErrorType());
    }
@@ -172,8 +172,8 @@ public class HandlaggningAdapterTest
       server.stubFor(WireMock.put(WireMock.urlPathMatching("/handlaggning/.+"))
             .willReturn(WireMock.aResponse().withStatus(200).withBody((String) null)));
       var handlaggningUpdate = createModelHandlaggningUpdate();
-      Mockito.when(handlaggningMapper.toPutHandlaggningRequest(handlaggningUpdate))
-            .thenReturn(toApiPutHandlaggningRequest(handlaggningUpdate));
+      Mockito.when(handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate))
+            .thenReturn(toApiHandlaggningUpdate(handlaggningUpdate));
       var exception = assertThrows(HandlaggningException.class, () -> handlaggningAdapter.updateHandlaggning(handlaggningUpdate));
       assertEquals(HandlaggningException.ErrorType.UNEXPECTED_ERROR, exception.getErrorType());
    }
@@ -183,8 +183,8 @@ public class HandlaggningAdapterTest
    {
       var handlaggningId = UUID.fromString("cf4691e6-f7e6-4db2-a409-8fc736d11234");
       var expectedHandlaggningUpdate = createModelHandlaggningUpdate(createModelHandlaggning(handlaggningId));
-      Mockito.when(handlaggningMapper.toPutHandlaggningRequest(expectedHandlaggningUpdate))
-            .thenReturn(toApiPutHandlaggningRequest(expectedHandlaggningUpdate));
+      Mockito.when(handlaggningMapper.toApiHandlaggningUpdate(expectedHandlaggningUpdate))
+            .thenReturn(toApiHandlaggningUpdate(expectedHandlaggningUpdate));
       Mockito.when(handlaggningMapper.toHandlaggningUpdate(Mockito.any())).thenReturn(expectedHandlaggningUpdate);
       var handlaggningUpdate = handlaggningAdapter.updateHandlaggning(expectedHandlaggningUpdate);
       assertEquals(expectedHandlaggningUpdate, handlaggningUpdate);
