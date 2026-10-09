@@ -1,15 +1,8 @@
 package se.fk.rimfrost.framework.handlaggning.model;
 
-import org.immutables.value.Value;
-
-@Value.Immutable
-public interface Uppgiftsdata
+public sealed interface Uppgiftsdata permits Uppgiftsdatakopia, Uppgiftsdatakoppling
 {
    String informationsobjektId();
 
    int informationsobjektversion();
-
-   String informationsobjekttyp();
-
-   String data();
 }

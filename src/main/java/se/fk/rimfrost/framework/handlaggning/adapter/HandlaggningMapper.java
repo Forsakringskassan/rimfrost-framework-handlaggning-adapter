@@ -14,9 +14,11 @@ import se.fk.rimfrost.framework.handlaggning.model.SakfragaStallningstagandeRef;
 import se.fk.rimfrost.framework.handlaggning.model.Uppgift;
 import se.fk.rimfrost.framework.handlaggning.model.UppgiftSpecifikation;
 import se.fk.rimfrost.framework.handlaggning.model.Uppgiftsdata;
+import se.fk.rimfrost.framework.handlaggning.model.Uppgiftsdatakopia;
 import se.fk.rimfrost.framework.handlaggning.model.Uppgiftsdatakoppling;
 import se.fk.rimfrost.framework.handlaggning.model.Yrkande;
 import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.*;
+import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdata.TypEnum;
 import java.util.List;
 
 @ApplicationScoped
@@ -259,32 +261,39 @@ public class HandlaggningMapper
          List<Uppgiftsdata> underlag)
    {
       return underlag.stream()
-            .map(a -> {
-               var kopia = new UppgiftsdataUnderlag();
-               kopia.setTyp(UppgiftsdataUnderlag.TypEnum.KOPIA);
-               kopia.setInformationsobjektId(a.informationsobjektId());
-               kopia.setInformationsobjektversion(a.informationsobjektversion());
-               kopia.setInformationsobjekttyp(a.informationsobjekttyp());
-               kopia.setData(a.data());
-               var b = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdata();
-               b.setUnderlag(kopia);
-               return b;
-            })
+            .map(this::toApiUppgiftsdata)
             .toList();
    }
 
-   private List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdatakoppling> toApiResultat(
+   private List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdata> toApiResultat(
          List<Uppgiftsdatakoppling> resultat)
    {
       return resultat.stream()
-            .map(a -> {
-               var b = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdatakoppling();
-               b.setTyp(se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdatakoppling.TypEnum.KOPPLING);
-               b.setInformationsobjektId(a.informationsobjektId());
-               b.setInformationsobjektversion(a.informationsobjektversion());
-               return b;
-            })
+            .map(this::toApiUppgiftsdata)
             .toList();
+   }
+
+   private se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdata toApiUppgiftsdata(Uppgiftsdata uppgiftsdata)
+   {
+      return switch (uppgiftsdata)
+      {
+         case Uppgiftsdatakopia kopia -> {
+            var apiKopia = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdatakopia();
+            apiKopia.setTyp(TypEnum.KOPIA);
+            apiKopia.setInformationsobjektId(kopia.informationsobjektId());
+            apiKopia.setInformationsobjektversion(kopia.informationsobjektversion());
+            apiKopia.setInformationsobjekttyp(kopia.informationsobjekttyp());
+            apiKopia.setData(kopia.data());
+            yield apiKopia;
+         }
+         case Uppgiftsdatakoppling koppling -> {
+            var apiKoppling = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdatakoppling();
+            apiKoppling.setTyp(TypEnum.KOPPLING);
+            apiKoppling.setInformationsobjektId(koppling.informationsobjektId());
+            apiKoppling.setInformationsobjektversion(koppling.informationsobjektversion());
+            yield apiKoppling;
+         }
+      };
    }
 
    private se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Regelutfall toApiRegelutfall(Regelutfall regelutfall)
@@ -346,18 +355,12 @@ public class HandlaggningMapper
       }
 
       return apiUnderlag.stream()
-            .map(se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdata::getUnderlag)
-            .map(a -> (Uppgiftsdata) ImmutableUppgiftsdata.builder()
-                  .informationsobjektId(a.getInformationsobjektId())
-                  .informationsobjektversion(a.getInformationsobjektversion())
-                  .informationsobjekttyp(a.getInformationsobjekttyp())
-                  .data(a.getData())
-                  .build())
+            .map(HandlaggningMapper::toUppgiftsdata)
             .toList();
    }
 
    private List<Uppgiftsdatakoppling> toResultat(
-         List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdatakoppling> apiResultat)
+         List<se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdata> apiResultat)
    {
       if (apiResultat == null)
       {
@@ -365,11 +368,41 @@ public class HandlaggningMapper
       }
 
       return apiResultat.stream()
-            .map(a -> (Uppgiftsdatakoppling) ImmutableUppgiftsdatakoppling.builder()
-                  .informationsobjektId(a.getInformationsobjektId())
-                  .informationsobjektversion(a.getInformationsobjektversion())
-                  .build())
+            .map(HandlaggningMapper::toUppgiftsdata)
+            .map(HandlaggningMapper::toUppgiftsdatakoppling)
             .toList();
+   }
+
+   private static Uppgiftsdata toUppgiftsdata(
+         se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdata apiUppgiftsdata)
+   {
+      if (apiUppgiftsdata instanceof se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdatakopia apiKopia)
+      {
+         return ImmutableUppgiftsdatakopia.builder()
+               .informationsobjektId(apiKopia.getInformationsobjektId())
+               .informationsobjektversion(apiKopia.getInformationsobjektversion())
+               .informationsobjekttyp(apiKopia.getInformationsobjekttyp())
+               .data(apiKopia.getData())
+               .build();
+      }
+      if (apiUppgiftsdata instanceof se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdatakoppling apiKoppling)
+      {
+         return ImmutableUppgiftsdatakoppling.builder()
+               .informationsobjektId(apiKoppling.getInformationsobjektId())
+               .informationsobjektversion(apiKoppling.getInformationsobjektversion())
+               .build();
+      }
+      throw new IllegalArgumentException(
+            "Uppgiftsdata av typ " + apiUppgiftsdata.getTyp() + " stöds inte");
+   }
+
+   private static Uppgiftsdatakoppling toUppgiftsdatakoppling(Uppgiftsdata uppgiftsdata)
+   {
+      if (uppgiftsdata instanceof Uppgiftsdatakoppling koppling)
+      {
+         return koppling;
+      }
+      throw new IllegalArgumentException("Resultat måste vara av typ KOPPLING");
    }
 
    private Regelutfall toRegelutfall(

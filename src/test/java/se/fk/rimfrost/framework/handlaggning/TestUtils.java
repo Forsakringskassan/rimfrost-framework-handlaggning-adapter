@@ -12,9 +12,11 @@ import se.fk.rimfrost.framework.handlaggning.model.SakfragaStallningstagandeRef;
 import se.fk.rimfrost.framework.handlaggning.model.Uppgift;
 import se.fk.rimfrost.framework.handlaggning.model.UppgiftSpecifikation;
 import se.fk.rimfrost.framework.handlaggning.model.Uppgiftsdata;
+import se.fk.rimfrost.framework.handlaggning.model.Uppgiftsdatakopia;
 import se.fk.rimfrost.framework.handlaggning.model.Uppgiftsdatakoppling;
 import se.fk.rimfrost.framework.handlaggning.model.Yrkande;
 import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.SakfragaStallningstagandeContainer;
+import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdata.TypEnum;
 
 public class TestUtils
 {
@@ -131,22 +133,30 @@ public class TestUtils
    private static se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdata toApiUppgiftsdata(
          Uppgiftsdata modelUppgiftsdata)
    {
-      se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.UppgiftsdataUnderlag kopia = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.UppgiftsdataUnderlag();
-      kopia.setTyp(se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.UppgiftsdataUnderlag.TypEnum.KOPIA);
-      kopia.setInformationsobjektId(modelUppgiftsdata.informationsobjektId());
-      kopia.setInformationsobjektversion(modelUppgiftsdata.informationsobjektversion());
-      kopia.setInformationsobjekttyp(modelUppgiftsdata.informationsobjekttyp());
-      kopia.setData(modelUppgiftsdata.data());
-      se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdata uppgiftsdata = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdata();
-      uppgiftsdata.setUnderlag(kopia);
-      return uppgiftsdata;
+      return switch (modelUppgiftsdata)
+      {
+         case Uppgiftsdatakopia modelKopia -> toApiUppgiftsdatakopia(modelKopia);
+         case Uppgiftsdatakoppling modelKoppling -> toApiUppgiftsdatakoppling(modelKoppling);
+      };
    }
 
-   private static se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdatakoppling toApiUppgiftsdatakoppling(
+   private static se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdata toApiUppgiftsdatakopia(
+         Uppgiftsdatakopia modelUppgiftsdatakopia)
+   {
+      se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdatakopia kopia = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdatakopia();
+      kopia.setTyp(TypEnum.KOPIA);
+      kopia.setInformationsobjektId(modelUppgiftsdatakopia.informationsobjektId());
+      kopia.setInformationsobjektversion(modelUppgiftsdatakopia.informationsobjektversion());
+      kopia.setInformationsobjekttyp(modelUppgiftsdatakopia.informationsobjekttyp());
+      kopia.setData(modelUppgiftsdatakopia.data());
+      return kopia;
+   }
+
+   private static se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdata toApiUppgiftsdatakoppling(
          Uppgiftsdatakoppling modelUppgiftsdatakoppling)
    {
       se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdatakoppling uppgiftsdatakoppling = new se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdatakoppling();
-      uppgiftsdatakoppling.setTyp(se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdatakoppling.TypEnum.KOPPLING);
+      uppgiftsdatakoppling.setTyp(TypEnum.KOPPLING);
       uppgiftsdatakoppling.setInformationsobjektId(modelUppgiftsdatakoppling.informationsobjektId());
       uppgiftsdatakoppling.setInformationsobjektversion(modelUppgiftsdatakoppling.informationsobjektversion());
       return uppgiftsdatakoppling;

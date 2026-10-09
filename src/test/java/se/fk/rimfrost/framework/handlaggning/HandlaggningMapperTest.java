@@ -22,7 +22,7 @@ import static se.fk.rimfrost.framework.handlaggning.TestData.createModelHandlagg
 import static se.fk.rimfrost.framework.handlaggning.TestData.createModelYrkande;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createRollIYrkande;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createSakfragaStallningstagande;
-import static se.fk.rimfrost.framework.handlaggning.TestData.createUppgiftsdata;
+import static se.fk.rimfrost.framework.handlaggning.TestData.createUppgiftsdatakopia;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createUppgift;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createUppgiftsdatakoppling;
 import static se.fk.rimfrost.framework.handlaggning.TestUtils.toApiHandlaggning;
@@ -197,7 +197,17 @@ public class HandlaggningMapperTest
    {
       var handlaggningUpdate = updateWithUppgift(ImmutableUppgift.builder()
             .from(createUppgift())
-            .addUnderlag(createUppgiftsdata())
+            .addUnderlag(createUppgiftsdatakopia())
+            .build());
+      assertEquals(toApiHandlaggningUpdate(handlaggningUpdate), handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate));
+   }
+
+   @Test
+   public void should_create_correct_api_handlaggning_update_underlag_with_koppling()
+   {
+      var handlaggningUpdate = updateWithUppgift(ImmutableUppgift.builder()
+            .from(createUppgift())
+            .addUnderlag(createUppgiftsdatakoppling())
             .build());
       assertEquals(toApiHandlaggningUpdate(handlaggningUpdate), handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate));
    }
@@ -346,7 +356,17 @@ public class HandlaggningMapperTest
    {
       var handlaggningUpdate = updateWithUppgift(ImmutableUppgift.builder()
             .from(createUppgift())
-            .addUnderlag(createUppgiftsdata())
+            .addUnderlag(createUppgiftsdatakopia())
+            .build());
+      assertEquals(handlaggningUpdate, handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(handlaggningUpdate)));
+   }
+
+   @Test
+   public void should_create_correct_model_handlaggning_update_underlag_with_koppling()
+   {
+      var handlaggningUpdate = updateWithUppgift(ImmutableUppgift.builder()
+            .from(createUppgift())
+            .addUnderlag(createUppgiftsdatakoppling())
             .build());
       assertEquals(handlaggningUpdate, handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(handlaggningUpdate)));
    }

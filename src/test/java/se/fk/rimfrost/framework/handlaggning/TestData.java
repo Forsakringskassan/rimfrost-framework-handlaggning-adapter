@@ -14,13 +14,13 @@ import se.fk.rimfrost.framework.handlaggning.model.ImmutableSakfragaStallningsta
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableSakfragaStallningstagandeRef;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableUppgift;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableUppgiftSpecifikation;
-import se.fk.rimfrost.framework.handlaggning.model.ImmutableUppgiftsdata;
+import se.fk.rimfrost.framework.handlaggning.model.ImmutableUppgiftsdatakopia;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableUppgiftsdatakoppling;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableYrkande;
 import se.fk.rimfrost.framework.handlaggning.model.RollIYrkande;
 import se.fk.rimfrost.framework.handlaggning.model.SakfragaStallningstagande;
 import se.fk.rimfrost.framework.handlaggning.model.Uppgift;
-import se.fk.rimfrost.framework.handlaggning.model.Uppgiftsdata;
+import se.fk.rimfrost.framework.handlaggning.model.Uppgiftsdatakopia;
 import se.fk.rimfrost.framework.handlaggning.model.Uppgiftsdatakoppling;
 import se.fk.rimfrost.framework.handlaggning.model.Yrkande;
 
@@ -128,9 +128,9 @@ public class TestData
       return createModelHandlaggningUpdate(createModelHandlaggning());
    }
 
-   public static Uppgiftsdata createUppgiftsdata()
+   public static Uppgiftsdatakopia createUppgiftsdatakopia()
    {
-      return ImmutableUppgiftsdata.builder()
+      return ImmutableUppgiftsdatakopia.builder()
             .informationsobjektId("3f8b2c1d-6e4a-4d7b-9c5e-1a2b3c4d5e6f")
             .informationsobjektversion(1)
             .informationsobjekttyp("folkbokforing")
@@ -175,7 +175,7 @@ public class TestData
             .fSSAinformation("ebdadec4-c126-4cbd-a2d7-bf71676211e9")
             .uppgiftSpecifikation(uppgiftSpecifikation)
             .regelutfall(regelutfall)
-            .underlag(List.of(createUppgiftsdata()))
+            .underlag(List.of(createUppgiftsdatakopia()))
             .resultat(List.of(createUppgiftsdatakoppling()))
             .build();
    }
