@@ -4,7 +4,7 @@ import org.immutables.value.Value;
 import java.util.UUID;
 
 @Value.Immutable
-public interface SakfragaStallningstagande
+public interface SakfragaStallningstagandeContainer
 {
    UUID id();
 

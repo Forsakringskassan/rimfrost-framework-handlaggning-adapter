@@ -27,7 +27,7 @@ public interface Yrkande
 
    List<RollIYrkande> rollerIYrkande();
 
-   List<SakfragaStallningstagande> sakfragorStallningstaganden();
+   List<SakfragaStallningstagandeContainer> sakfragorStallningstaganden();
 
    List<Beslut> beslut();
 }

@@ -63,8 +63,25 @@
         "kommentar": null,
         "FSSAinformation": "ebdadec4-c126-4cbd-a2d7-bf71676211e9",
         "regelutfall": null,
-        "underlag": [],
-        "resultat": []
+        "underlag": [
+          {
+            "typ": "KOPIA",
+            "informationsobjekttyp": "folkbokforing",
+            "data": "{}"
+          },
+          {
+            "typ": "KOPPLING",
+            "informationsobjektId": "3f8b2c1d-6e4a-4d7b-9c5e-1a2b3c4d5e6f",
+            "informationsobjektversion": 1
+          }
+        ],
+        "resultat": [
+          {
+            "typ": "KOPPLING",
+            "informationsobjektId": "3f8b2c1d-6e4a-4d7b-9c5e-1a2b3c4d5e6f",
+            "informationsobjektversion": 2
+          }
+        ]
       }
     }
   }

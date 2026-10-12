@@ -21,7 +21,7 @@ import static se.fk.rimfrost.framework.handlaggning.TestData.createModelHandlagg
 import static se.fk.rimfrost.framework.handlaggning.TestData.createModelHandlaggningUpdate;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createModelYrkande;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createRollIYrkande;
-import static se.fk.rimfrost.framework.handlaggning.TestData.createSakfragaStallningstagande;
+import static se.fk.rimfrost.framework.handlaggning.TestData.createSakfragaStallningstagandeContainer;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createUppgiftsdatakopia;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createUppgift;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createUppgiftsdatakoppling;
@@ -85,7 +85,7 @@ public class HandlaggningMapperTest
    {
       var expectedYrkande = ImmutableYrkande.builder()
             .from(createModelYrkande())
-            .addSakfragorStallningstaganden(createSakfragaStallningstagande())
+            .addSakfragorStallningstaganden(createSakfragaStallningstagandeContainer())
             .build();
       var apiYrkande = toApiYrkande(expectedYrkande);
       assertEquals(expectedYrkande, handlaggningMapper.toYrkande(apiYrkande));
@@ -177,7 +177,7 @@ public class HandlaggningMapperTest
    {
       var handlaggningUpdate = updateWithYrkande(ImmutableYrkande.builder()
             .from(createModelYrkande())
-            .addSakfragorStallningstaganden(createSakfragaStallningstagande())
+            .addSakfragorStallningstaganden(createSakfragaStallningstagandeContainer())
             .build());
       assertEquals(toApiHandlaggningUpdate(handlaggningUpdate), handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate));
    }
@@ -336,7 +336,7 @@ public class HandlaggningMapperTest
    {
       var handlaggningUpdate = updateWithYrkande(ImmutableYrkande.builder()
             .from(createModelYrkande())
-            .addSakfragorStallningstaganden(createSakfragaStallningstagande())
+            .addSakfragorStallningstaganden(createSakfragaStallningstagandeContainer())
             .build());
       assertEquals(handlaggningUpdate, handlaggningMapper.toHandlaggningUpdate(toApiHandlaggningUpdate(handlaggningUpdate)));
    }
@@ -490,7 +490,7 @@ public class HandlaggningMapperTest
             .from(handlaggning)
             .yrkande(ImmutableYrkande.builder()
                   .from(handlaggning.yrkande())
-                  .addSakfragorStallningstaganden(createSakfragaStallningstagande())
+                  .addSakfragorStallningstaganden(createSakfragaStallningstagandeContainer())
                   .build())
             .build();
       assertEquals(updatedHandlaggning, handlaggningMapper.toHandlaggning(toApiHandlaggning(updatedHandlaggning)));

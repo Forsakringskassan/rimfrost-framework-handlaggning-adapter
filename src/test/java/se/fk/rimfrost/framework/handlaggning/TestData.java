@@ -10,7 +10,7 @@ import se.fk.rimfrost.framework.handlaggning.model.ImmutableHandlaggningUpdate;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableIdtyp;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableRegelutfall;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableRollIYrkande;
-import se.fk.rimfrost.framework.handlaggning.model.ImmutableSakfragaStallningstagande;
+import se.fk.rimfrost.framework.handlaggning.model.ImmutableSakfragaStallningstagandeContainer;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableSakfragaStallningstagandeRef;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableUppgift;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableUppgiftSpecifikation;
@@ -18,7 +18,7 @@ import se.fk.rimfrost.framework.handlaggning.model.ImmutableUppgiftsdatakopia;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableUppgiftsdatakoppling;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableYrkande;
 import se.fk.rimfrost.framework.handlaggning.model.RollIYrkande;
-import se.fk.rimfrost.framework.handlaggning.model.SakfragaStallningstagande;
+import se.fk.rimfrost.framework.handlaggning.model.SakfragaStallningstagandeContainer;
 import se.fk.rimfrost.framework.handlaggning.model.Uppgift;
 import se.fk.rimfrost.framework.handlaggning.model.Uppgiftsdatakopia;
 import se.fk.rimfrost.framework.handlaggning.model.Uppgiftsdatakoppling;
@@ -49,9 +49,9 @@ public class TestData
             .build();
    }
 
-   public static SakfragaStallningstagande createSakfragaStallningstagande()
+   public static SakfragaStallningstagandeContainer createSakfragaStallningstagandeContainer()
    {
-      return ImmutableSakfragaStallningstagande.builder()
+      return ImmutableSakfragaStallningstagandeContainer.builder()
             .id(SAKFRAGA_STALLNINGSTAGANDE_ID)
             .objektTypId("ersattning")
             .data("{}")
@@ -100,7 +100,7 @@ public class TestData
             .yrkandeTom(OffsetDateTime.parse("2026-04-18T17:00:00+00"))
             .avsikt("NY")
             .rollerIYrkande(List.of(createRollIYrkande()))
-            .sakfragorStallningstaganden(List.of(createSakfragaStallningstagande()))
+            .sakfragorStallningstaganden(List.of(createSakfragaStallningstagandeContainer()))
             .build();
    }
 
@@ -131,8 +131,6 @@ public class TestData
    public static Uppgiftsdatakopia createUppgiftsdatakopia()
    {
       return ImmutableUppgiftsdatakopia.builder()
-            .informationsobjektId("3f8b2c1d-6e4a-4d7b-9c5e-1a2b3c4d5e6f")
-            .informationsobjektversion(1)
             .informationsobjekttyp("folkbokforing")
             .data("{}")
             .build();

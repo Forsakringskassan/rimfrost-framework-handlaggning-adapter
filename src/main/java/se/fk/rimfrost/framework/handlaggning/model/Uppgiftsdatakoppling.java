@@ -5,4 +5,7 @@ import org.immutables.value.Value;
 @Value.Immutable
 public non-sealed interface Uppgiftsdatakoppling extends Uppgiftsdata
 {
+   String informationsobjektId();
+
+   int informationsobjektversion();
 }
