@@ -1,13 +1,14 @@
 package se.fk.rimfrost.framework.handlaggning.model;
 
 import org.immutables.value.Value;
+import java.util.UUID;
 
 @Value.Immutable
-public interface Underlag
+public interface SakfragaStallningstagandeContainer
 {
-   String typ();
+   UUID id();
 
-   Integer version();
+   String objektTypId();
 
    String data();
 }

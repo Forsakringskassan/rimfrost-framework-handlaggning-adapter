@@ -95,26 +95,27 @@ public class HandlaggningAdapter
 
    public HandlaggningUpdate updateHandlaggning(HandlaggningUpdate handlaggningUpdate) throws HandlaggningException
    {
+      var handlaggningId = handlaggningUpdate.handlaggning().id();
       try
       {
-         var putHandlaggningRequest = handlaggningMapper.toPutHandlaggningRequest(handlaggningUpdate);
-         var putHandlaggningResponse = handlaggningClient.putHandlaggning(handlaggningUpdate.id(), putHandlaggningRequest);
+         var apiHandlaggningUpdate = handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate);
+         var putHandlaggningResponse = handlaggningClient.putHandlaggning(handlaggningId, apiHandlaggningUpdate);
          if (putHandlaggningResponse == null)
          {
             throw new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR,
-                  "Oväntat fel vid uppdatering av handläggning, response är null för handläggningId: " + handlaggningUpdate.id());
+                  "Oväntat fel vid uppdatering av handläggning, response är null för handläggningId: " + handlaggningId);
          }
-         return handlaggningMapper.toHandlaggningUpdate(putHandlaggningResponse.getHandlaggning());
+         return handlaggningMapper.toHandlaggningUpdate(putHandlaggningResponse);
       }
       catch (NotFoundException e)
       {
          throw new HandlaggningException(HandlaggningException.ErrorType.NOT_FOUND,
-               "Ingen handläggning hittades med id: " + handlaggningUpdate.id(), e);
+               "Ingen handläggning hittades med id: " + handlaggningId, e);
       }
       catch (BadRequestException e)
       {
          throw new HandlaggningException(HandlaggningException.ErrorType.BAD_REQUEST,
-               "Felaktig förfrågan vid uppdatering av handläggning med id: " + handlaggningUpdate.id(), e);
+               "Felaktig förfrågan vid uppdatering av handläggning med id: " + handlaggningId, e);
       }
       catch (ProcessingException e)
       {
@@ -126,11 +127,11 @@ public class HandlaggningAdapter
          if (e.getResponse().getStatus() == 409)
          {
             throw new HandlaggningException(HandlaggningException.ErrorType.CONFLICT,
-                  "Konflikt vid uppdatering av handläggning med id: " + handlaggningUpdate.id(), e);
+                  "Konflikt vid uppdatering av handläggning med id: " + handlaggningId, e);
          }
 
          throw new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR,
-               "Oväntat fel vid uppdatering av handläggning med id: " + handlaggningUpdate.id() + ", status: "
+               "Oväntat fel vid uppdatering av handläggning med id: " + handlaggningId + ", status: "
                      + e.getResponse().getStatus(),
                e);
       }
