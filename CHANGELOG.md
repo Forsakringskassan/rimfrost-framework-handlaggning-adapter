@@ -2,6 +2,19 @@
 
 Changelog of rimfrost-framework-handlaggning-adapter.
 
+## 1.2.5 (2026-10-15)
+
+### Bug Fixes
+
+-  **deps**  update dependency org.immutables:bom to v2.12.3 ([edd38](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/edd381251fef3db) renovate[bot])  
+-  **deps**  update dependency io.quarkus:quarkus-bom to v3.40.1 ([a8e03](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/a8e03e69ca88835) renovate[bot])  
+
+### Dependency updates
+
+- update forsakringskassan/.github digest to cbd74f1 ([81c92](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/81c92ef7c1b6d8c) renovate[bot])  
+- update forsakringskassan/.github digest to bfb01f7 ([038e9](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/038e9dd9a7168e2) renovate[bot])  
+## rimfrost-1_2 (2026-09-15)
+
 ## 1.2.4 (2026-09-15)
 
 ### Bug Fixes
