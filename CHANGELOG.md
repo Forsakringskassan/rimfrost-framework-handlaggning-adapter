@@ -2,7 +2,7 @@
 
 Changelog of rimfrost-framework-handlaggning-adapter.
 
-## 1.2.5 (2026-10-15)
+## 1.2.5 (2026-10-23)
 
 ### Bug Fixes
 
@@ -13,6 +13,14 @@ Changelog of rimfrost-framework-handlaggning-adapter.
 
 - update forsakringskassan/.github digest to cbd74f1 ([81c92](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/81c92ef7c1b6d8c) renovate[bot])  
 - update forsakringskassan/.github digest to bfb01f7 ([038e9](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/038e9dd9a7168e2) renovate[bot])  
+### Other changes
+
+**try self-publishing**
+
+
+[ee506](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/ee50698c503ca0f) Jönsson Christian (66143296) *2026-10-23 15:33:33*
+
+
 ## rimfrost-1_2 (2026-09-15)
 
 ## 1.2.4 (2026-09-15)
