@@ -1,0 +1,20 @@
+name: Test Maven Staging
+
+on:
+  push:
+    branches: [feat/fix-rimfrost-builds]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Testversion, t.ex. 0.0.0-test.1"
+        required: true
+        default: "0.0.0-test.1"
+
+jobs:
+  maven-release:
+    permissions:
+      contents: write
+      packages: read
+    uses: Forsakringskassan/.github/.github/workflows/maven-release.yaml@56008eab940523d1fe211740bda9eb1e17c0ef34 # temp branch
+    with:
+      version: ${{ inputs.version || '0.0.0-test.1' }}
