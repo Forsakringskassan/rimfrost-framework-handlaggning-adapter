@@ -2,6 +2,12 @@
 
 Changelog of rimfrost-framework-handlaggning-adapter.
 
+## 1.2.7 (2026-10-29)
+
+### Bug Fixes
+
+-  Bump release version ([649f2](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/649f2497f2f8154) Lars Persson)  
+
 ## 1.2.6 (2026-10-29)
 
 ### Bug Fixes
