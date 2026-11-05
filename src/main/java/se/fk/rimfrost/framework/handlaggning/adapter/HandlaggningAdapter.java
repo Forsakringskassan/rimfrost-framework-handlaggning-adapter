@@ -75,15 +75,18 @@ public class HandlaggningAdapter
       catch (WebApplicationException e)
       {
          var status = e.getResponse().getStatus();
-         throw switch (status)
+         switch (status)
          {
-            case 404 -> new HandlaggningException(HandlaggningException.ErrorType.NOT_FOUND,
-                  "Hittade ingen handläggning med id: " + handlaggningId, e);
-            case 400 -> new HandlaggningException(HandlaggningException.ErrorType.BAD_REQUEST,
-                  "Felaktig förfrågan vid hämtning av handläggning med id: " + handlaggningId, e);
-            default -> new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR,
-                  "Oväntat fel vid hämtning av handläggning med id: " + handlaggningId + ", status: " + status, e);
-         };
+            case 404:
+               throw new HandlaggningException(HandlaggningException.ErrorType.NOT_FOUND,
+                     "Hittade ingen handläggning med id: " + handlaggningId, e);
+            case 400:
+               throw new HandlaggningException(HandlaggningException.ErrorType.BAD_REQUEST,
+                     "Felaktig förfrågan vid hämtning av handläggning med id: " + handlaggningId, e);
+            default:
+               throw new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR,
+                     "Oväntat fel vid hämtning av handläggning med id: " + handlaggningId + ", status: " + status, e);
+         }
       }
    }
 
@@ -109,17 +112,21 @@ public class HandlaggningAdapter
       catch (WebApplicationException e)
       {
          var status = e.getResponse().getStatus();
-         throw switch (status)
+         switch (status)
          {
-            case 404 -> new HandlaggningException(HandlaggningException.ErrorType.NOT_FOUND,
-                  "Ingen handläggning hittades med id: " + handlaggningId, e);
-            case 400 -> new HandlaggningException(HandlaggningException.ErrorType.BAD_REQUEST,
-                  "Felaktig förfrågan vid uppdatering av handläggning med id: " + handlaggningId, e);
-            case 409 -> new HandlaggningException(HandlaggningException.ErrorType.CONFLICT,
-                  "Konflikt vid uppdatering av handläggning med id: " + handlaggningId, e);
-            default -> new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR,
-                  "Oväntat fel vid uppdatering av handläggning med id: " + handlaggningId + ", status: " + status, e);
-         };
+            case 404:
+               throw new HandlaggningException(HandlaggningException.ErrorType.NOT_FOUND,
+                     "Ingen handläggning hittades med id: " + handlaggningId, e);
+            case 400:
+               throw new HandlaggningException(HandlaggningException.ErrorType.BAD_REQUEST,
+                     "Felaktig förfrågan vid uppdatering av handläggning med id: " + handlaggningId, e);
+            case 409:
+               throw new HandlaggningException(HandlaggningException.ErrorType.CONFLICT,
+                     "Konflikt vid uppdatering av handläggning med id: " + handlaggningId, e);
+            default:
+               throw new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR,
+                     "Oväntat fel vid uppdatering av handläggning med id: " + handlaggningId + ", status: " + status, e);
+         }
       }
    }
 
