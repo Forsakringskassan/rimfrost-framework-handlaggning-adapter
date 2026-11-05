@@ -2,6 +2,16 @@
 
 Changelog of rimfrost-framework-handlaggning-adapter.
 
+## 1.2.8 (2026-11-05)
+
+### Bug Fixes
+
+-  spotless ([16aab](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/16aab765d9f1364) Nils Elveros)  
+-  force jersey and map error by status code ([0aef5](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/0aef574fc433d7e) Nils Elveros)  
+
+### Dependency updates
+
+- update forsakringskassan/.github digest to 625efb1 ([ec459](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/ec45903cc22935c) renovate[bot])  
 ## 1.2.7 (2026-10-29)
 
 ### Bug Fixes
