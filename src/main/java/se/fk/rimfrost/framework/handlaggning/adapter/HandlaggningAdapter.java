@@ -4,15 +4,13 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.BadRequestException;
-import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.Client;
-import jakarta.ws.rs.client.ClientBuilder;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.glassfish.jersey.apache5.connector.Apache5ConnectorProvider;
 import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.client.proxy.WebResourceFactory;
 import se.fk.rimfrost.framework.handlaggning.exception.HandlaggningException;
 import se.fk.rimfrost.framework.handlaggning.model.Handlaggning;
@@ -20,7 +18,6 @@ import se.fk.rimfrost.framework.handlaggning.model.HandlaggningUpdate;
 import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.HandlaggningControllerApi;
 import java.util.UUID;
 
-@SuppressWarnings("unused")
 @ApplicationScoped
 public class HandlaggningAdapter
 {
@@ -40,7 +37,7 @@ public class HandlaggningAdapter
    {
       ClientConfig clientConfig = new ClientConfig();
       clientConfig.connectorProvider(new Apache5ConnectorProvider());
-      this.client = ClientBuilder.newClient(clientConfig);
+      this.client = JerseyClientBuilder.createClient(clientConfig);
       this.handlaggningClient = WebResourceFactory.newResource(
             HandlaggningControllerApi.class,
             client.target(this.handlaggningBaseUrl));
@@ -70,16 +67,6 @@ public class HandlaggningAdapter
          }
          return handlaggningMapper.toHandlaggning(getHandlaggningResponse.getHandlaggning());
       }
-      catch (NotFoundException e)
-      {
-         throw new HandlaggningException(HandlaggningException.ErrorType.NOT_FOUND,
-               "Hittade ingen handläggning med id: " + handlaggningId, e);
-      }
-      catch (BadRequestException e)
-      {
-         throw new HandlaggningException(HandlaggningException.ErrorType.BAD_REQUEST,
-               "Felaktig förfrågan vid hämtning av handläggning med id: " + handlaggningId, e);
-      }
       catch (ProcessingException e)
       {
          throw new HandlaggningException(HandlaggningException.ErrorType.SERVICE_UNAVAILABLE,
@@ -87,9 +74,16 @@ public class HandlaggningAdapter
       }
       catch (WebApplicationException e)
       {
-         throw new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR,
-               "Oväntat fel vid hämtning av handläggning med id: " + handlaggningId + ", status: " + e.getResponse().getStatus(),
-               e);
+         var status = e.getResponse().getStatus();
+         throw switch (status)
+         {
+            case 404 -> new HandlaggningException(HandlaggningException.ErrorType.NOT_FOUND,
+                  "Hittade ingen handläggning med id: " + handlaggningId, e);
+            case 400 -> new HandlaggningException(HandlaggningException.ErrorType.BAD_REQUEST,
+                  "Felaktig förfrågan vid hämtning av handläggning med id: " + handlaggningId, e);
+            default -> new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR,
+                  "Oväntat fel vid hämtning av handläggning med id: " + handlaggningId + ", status: " + status, e);
+         };
       }
    }
 
@@ -107,16 +101,6 @@ public class HandlaggningAdapter
          }
          return handlaggningMapper.toHandlaggningUpdate(putHandlaggningResponse);
       }
-      catch (NotFoundException e)
-      {
-         throw new HandlaggningException(HandlaggningException.ErrorType.NOT_FOUND,
-               "Ingen handläggning hittades med id: " + handlaggningId, e);
-      }
-      catch (BadRequestException e)
-      {
-         throw new HandlaggningException(HandlaggningException.ErrorType.BAD_REQUEST,
-               "Felaktig förfrågan vid uppdatering av handläggning med id: " + handlaggningId, e);
-      }
       catch (ProcessingException e)
       {
          throw new HandlaggningException(HandlaggningException.ErrorType.SERVICE_UNAVAILABLE,
@@ -124,16 +108,18 @@ public class HandlaggningAdapter
       }
       catch (WebApplicationException e)
       {
-         if (e.getResponse().getStatus() == 409)
+         var status = e.getResponse().getStatus();
+         throw switch (status)
          {
-            throw new HandlaggningException(HandlaggningException.ErrorType.CONFLICT,
+            case 404 -> new HandlaggningException(HandlaggningException.ErrorType.NOT_FOUND,
+                  "Ingen handläggning hittades med id: " + handlaggningId, e);
+            case 400 -> new HandlaggningException(HandlaggningException.ErrorType.BAD_REQUEST,
+                  "Felaktig förfrågan vid uppdatering av handläggning med id: " + handlaggningId, e);
+            case 409 -> new HandlaggningException(HandlaggningException.ErrorType.CONFLICT,
                   "Konflikt vid uppdatering av handläggning med id: " + handlaggningId, e);
-         }
-
-         throw new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR,
-               "Oväntat fel vid uppdatering av handläggning med id: " + handlaggningId + ", status: "
-                     + e.getResponse().getStatus(),
-               e);
+            default -> new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR,
+                  "Oväntat fel vid uppdatering av handläggning med id: " + handlaggningId + ", status: " + status, e);
+         };
       }
    }
 
