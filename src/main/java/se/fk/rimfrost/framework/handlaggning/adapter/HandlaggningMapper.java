@@ -17,7 +17,6 @@ import se.fk.rimfrost.framework.handlaggning.model.Uppgiftsdata;
 import se.fk.rimfrost.framework.handlaggning.model.Uppgiftsdatakopia;
 import se.fk.rimfrost.framework.handlaggning.model.Uppgiftsdatakoppling;
 import se.fk.rimfrost.framework.handlaggning.model.Yrkande;
-import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.*;
 import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.model.Uppgiftsdata.TypEnum;
 import java.util.List;
 
