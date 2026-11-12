@@ -37,6 +37,7 @@ public class HandlaggningAdapter
    {
       ClientConfig clientConfig = new ClientConfig();
       clientConfig.connectorProvider(new Apache5ConnectorProvider());
+      clientConfig.register(AdapterObjectMapperProvider.class);
       this.client = JerseyClientBuilder.createClient(clientConfig);
       this.handlaggningClient = WebResourceFactory.newResource(
             HandlaggningControllerApi.class,
