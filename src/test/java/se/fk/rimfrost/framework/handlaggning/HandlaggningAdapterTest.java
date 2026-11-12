@@ -115,6 +115,16 @@ public class HandlaggningAdapterTest
    }
 
    @Test
+   public void should_ignore_unknown_property_during_read_handlaggning() throws HandlaggningException
+   {
+      var handlaggningId = UUID.fromString("cf4691e6-f7e6-4db2-a409-8fc736d15555");
+      var expectedHandlaggning = TestData.createModelHandlaggning();
+      Mockito.when(handlaggningMapper.toHandlaggning(Mockito.any())).thenReturn(expectedHandlaggning);
+      var handlaggning = handlaggningAdapter.readHandlaggning(handlaggningId);
+      assertEquals(expectedHandlaggning, handlaggning);
+   }
+
+   @Test
    public void should_throw_with_error_type_bad_request_on_status_400_during_update_handlaggning() throws HandlaggningException
    {
       server.stubFor(WireMock.put(WireMock.urlPathMatching("/handlaggning/.+"))
