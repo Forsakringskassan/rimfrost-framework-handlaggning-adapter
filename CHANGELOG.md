@@ -2,6 +2,15 @@
 
 Changelog of rimfrost-framework-handlaggning-adapter.
 
+## 1.2.9 (2026-11-12)
+
+### Bug Fixes
+
+-  Add support for ignoring unknown json properties ([0340f](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/0340f4347cc019b) Lars Persson)  
+
+### Dependency updates
+
+- update forsakringskassan/.github digest to cbc0db8 ([34c79](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/34c79200d1ed691) renovate[bot])  
 ## 1.2.8 (2026-11-05)
 
 ### Bug Fixes
