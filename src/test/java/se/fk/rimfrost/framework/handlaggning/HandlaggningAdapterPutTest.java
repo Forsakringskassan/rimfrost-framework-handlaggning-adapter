@@ -38,12 +38,14 @@ import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Testar PUT av handläggning med riktig mapper. Requesten som skickas ska motsvara
  * jsonBody i put-handlaggning.json.
  */
-@QuarkusComponentTest(value = HandlaggningMapper.class, useSystemConfigSources = true)
+@QuarkusComponentTest(value = HandlaggningMapper.class)
 public class HandlaggningAdapterPutTest
 {
    private static final UUID HANDLAGGNING_ID = UUID.fromString("5367f6b8-cc4a-11f0-8de9-199901011234");
@@ -70,8 +72,6 @@ public class HandlaggningAdapterPutTest
                   .dynamicPort()
                   .usingFilesUnderDirectory("src/test/resources"));
       server.start();
-
-      System.setProperty("handlaggning.api.base-url", server.baseUrl());
    }
 
    @AfterAll
@@ -95,12 +95,21 @@ public class HandlaggningAdapterPutTest
    {
       var handlaggningUpdate = createHandlaggningUpdate();
 
-      var response = handlaggningAdapter.updateHandlaggning(handlaggningUpdate);
+      var response = handlaggningAdapter.updateHandlaggning(server.baseUrl(), handlaggningUpdate);
 
       // Datum i handläggningen normaliseras till UTC vid deserialisering, så endast uppgiften jämförs i sin helhet
       assertEquals(handlaggningUpdate.uppgift(), response.uppgift());
       server.verify(putRequestedFor(urlPathEqualTo("/handlaggning/" + HANDLAGGNING_ID))
             .withRequestBody(equalToJson(expectedRequestBody())));
+   }
+
+   @Test
+   public void should_throw_error_type_unexpected_error_on_malformed_url()
+   {
+      var exception = assertThrows(HandlaggningException.class,
+            () -> handlaggningAdapter.updateHandlaggning("http:///path", createHandlaggningUpdate()));
+      assertEquals(HandlaggningException.ErrorType.UNEXPECTED_ERROR, exception.getErrorType());
+      assertTrue(exception.getMessage().matches("(?i).*bas url måste vara en absolut http\\(s\\)-url.*"));
    }
 
    private static String expectedRequestBody() throws IOException

@@ -20,11 +20,12 @@ import java.util.UUID;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createModelHandlaggning;
 import static se.fk.rimfrost.framework.handlaggning.TestData.createModelHandlaggningUpdate;
 import static se.fk.rimfrost.framework.handlaggning.TestUtils.toApiHandlaggningUpdate;
 
-@QuarkusComponentTest(useSystemConfigSources = true)
+@QuarkusComponentTest
 public class HandlaggningAdapterTest
 {
    private static WireMockServer server;
@@ -43,8 +44,6 @@ public class HandlaggningAdapterTest
                   .dynamicPort()
                   .usingFilesUnderDirectory("src/test/resources"));
       server.start();
-
-      System.setProperty("handlaggning.api.base-url", server.baseUrl());
    }
 
    @AfterAll
@@ -68,7 +67,8 @@ public class HandlaggningAdapterTest
       var handlaggningId = UUID.fromString("cf4691e6-f7e6-4db2-a409-8fc736d13931");
       server.stubFor(WireMock.get(WireMock.urlPathMatching("/handlaggning/.+"))
             .willReturn(WireMock.aResponse().withStatus(400)));
-      var exception = assertThrows(HandlaggningException.class, () -> handlaggningAdapter.readHandlaggning(handlaggningId));
+      var exception = assertThrows(HandlaggningException.class,
+            () -> handlaggningAdapter.readHandlaggning(server.baseUrl(), handlaggningId));
       assertEquals(HandlaggningException.ErrorType.BAD_REQUEST, exception.getErrorType());
    }
 
@@ -79,7 +79,8 @@ public class HandlaggningAdapterTest
       var handlaggningId = UUID.fromString("cf4691e6-f7e6-4db2-a409-8fc736d13931");
       server.stubFor(WireMock.get(WireMock.urlPathMatching("/handlaggning/.+"))
             .willReturn(WireMock.aResponse().withFault(Fault.CONNECTION_RESET_BY_PEER)));
-      var exception = assertThrows(HandlaggningException.class, () -> handlaggningAdapter.readHandlaggning(handlaggningId));
+      var exception = assertThrows(HandlaggningException.class,
+            () -> handlaggningAdapter.readHandlaggning(server.baseUrl(), handlaggningId));
       assertEquals(HandlaggningException.ErrorType.SERVICE_UNAVAILABLE, exception.getErrorType());
    }
 
@@ -89,7 +90,8 @@ public class HandlaggningAdapterTest
       var handlaggningId = UUID.fromString("cf4691e6-f7e6-4db2-a409-8fc736d13931");
       server.stubFor(WireMock.get(WireMock.urlPathMatching("/handlaggning/.+"))
             .willReturn(WireMock.aResponse().withStatus(500)));
-      var exception = assertThrows(HandlaggningException.class, () -> handlaggningAdapter.readHandlaggning(handlaggningId));
+      var exception = assertThrows(HandlaggningException.class,
+            () -> handlaggningAdapter.readHandlaggning(server.baseUrl(), handlaggningId));
       assertEquals(HandlaggningException.ErrorType.UNEXPECTED_ERROR, exception.getErrorType());
    }
 
@@ -100,7 +102,8 @@ public class HandlaggningAdapterTest
       var handlaggningId = UUID.fromString("cf4691e6-f7e6-4db2-a409-8fc736d13931");
       server.stubFor(WireMock.get(WireMock.urlPathMatching("/handlaggning/.+"))
             .willReturn(WireMock.aResponse().withStatus(200).withBody((String) null)));
-      var exception = assertThrows(HandlaggningException.class, () -> handlaggningAdapter.readHandlaggning(handlaggningId));
+      var exception = assertThrows(HandlaggningException.class,
+            () -> handlaggningAdapter.readHandlaggning(server.baseUrl(), handlaggningId));
       assertEquals(HandlaggningException.ErrorType.UNEXPECTED_ERROR, exception.getErrorType());
    }
 
@@ -110,7 +113,7 @@ public class HandlaggningAdapterTest
       var handlaggningId = UUID.fromString("cf4691e6-f7e6-4db2-a409-8fc736d11234");
       var expectedHandlaggning = TestData.createModelHandlaggning();
       Mockito.when(handlaggningMapper.toHandlaggning(Mockito.any())).thenReturn(expectedHandlaggning);
-      var handlaggning = handlaggningAdapter.readHandlaggning(handlaggningId);
+      var handlaggning = handlaggningAdapter.readHandlaggning(server.baseUrl(), handlaggningId);
       assertEquals(expectedHandlaggning, handlaggning);
    }
 
@@ -120,7 +123,7 @@ public class HandlaggningAdapterTest
       var handlaggningId = UUID.fromString("cf4691e6-f7e6-4db2-a409-8fc736d15555");
       var expectedHandlaggning = TestData.createModelHandlaggning();
       Mockito.when(handlaggningMapper.toHandlaggning(Mockito.any())).thenReturn(expectedHandlaggning);
-      var handlaggning = handlaggningAdapter.readHandlaggning(handlaggningId);
+      var handlaggning = handlaggningAdapter.readHandlaggning(server.baseUrl(), handlaggningId);
       assertEquals(expectedHandlaggning, handlaggning);
    }
 
@@ -132,7 +135,8 @@ public class HandlaggningAdapterTest
       var handlaggningUpdate = createModelHandlaggningUpdate();
       Mockito.when(handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate))
             .thenReturn(toApiHandlaggningUpdate(handlaggningUpdate));
-      var exception = assertThrows(HandlaggningException.class, () -> handlaggningAdapter.updateHandlaggning(handlaggningUpdate));
+      var exception = assertThrows(HandlaggningException.class,
+            () -> handlaggningAdapter.updateHandlaggning(server.baseUrl(), handlaggningUpdate));
       assertEquals(HandlaggningException.ErrorType.BAD_REQUEST, exception.getErrorType());
    }
 
@@ -145,7 +149,8 @@ public class HandlaggningAdapterTest
       var handlaggningUpdate = createModelHandlaggningUpdate();
       Mockito.when(handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate))
             .thenReturn(toApiHandlaggningUpdate(handlaggningUpdate));
-      var exception = assertThrows(HandlaggningException.class, () -> handlaggningAdapter.updateHandlaggning(handlaggningUpdate));
+      var exception = assertThrows(HandlaggningException.class,
+            () -> handlaggningAdapter.updateHandlaggning(server.baseUrl(), handlaggningUpdate));
       assertEquals(HandlaggningException.ErrorType.SERVICE_UNAVAILABLE, exception.getErrorType());
    }
 
@@ -158,7 +163,8 @@ public class HandlaggningAdapterTest
       var handlaggningUpdate = createModelHandlaggningUpdate();
       Mockito.when(handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate))
             .thenReturn(toApiHandlaggningUpdate(handlaggningUpdate));
-      var exception = assertThrows(HandlaggningException.class, () -> handlaggningAdapter.updateHandlaggning(handlaggningUpdate));
+      var exception = assertThrows(HandlaggningException.class,
+            () -> handlaggningAdapter.updateHandlaggning(server.baseUrl(), handlaggningUpdate));
       assertEquals(HandlaggningException.ErrorType.UNEXPECTED_ERROR, exception.getErrorType());
    }
 
@@ -171,7 +177,8 @@ public class HandlaggningAdapterTest
       var handlaggningUpdate = createModelHandlaggningUpdate();
       Mockito.when(handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate))
             .thenReturn(toApiHandlaggningUpdate(handlaggningUpdate));
-      var exception = assertThrows(HandlaggningException.class, () -> handlaggningAdapter.updateHandlaggning(handlaggningUpdate));
+      var exception = assertThrows(HandlaggningException.class,
+            () -> handlaggningAdapter.updateHandlaggning(server.baseUrl(), handlaggningUpdate));
       assertEquals(HandlaggningException.ErrorType.CONFLICT, exception.getErrorType());
    }
 
@@ -184,7 +191,8 @@ public class HandlaggningAdapterTest
       var handlaggningUpdate = createModelHandlaggningUpdate();
       Mockito.when(handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate))
             .thenReturn(toApiHandlaggningUpdate(handlaggningUpdate));
-      var exception = assertThrows(HandlaggningException.class, () -> handlaggningAdapter.updateHandlaggning(handlaggningUpdate));
+      var exception = assertThrows(HandlaggningException.class,
+            () -> handlaggningAdapter.updateHandlaggning(server.baseUrl(), handlaggningUpdate));
       assertEquals(HandlaggningException.ErrorType.UNEXPECTED_ERROR, exception.getErrorType());
    }
 
@@ -196,7 +204,34 @@ public class HandlaggningAdapterTest
       Mockito.when(handlaggningMapper.toApiHandlaggningUpdate(expectedHandlaggningUpdate))
             .thenReturn(toApiHandlaggningUpdate(expectedHandlaggningUpdate));
       Mockito.when(handlaggningMapper.toHandlaggningUpdate(Mockito.any())).thenReturn(expectedHandlaggningUpdate);
-      var handlaggningUpdate = handlaggningAdapter.updateHandlaggning(expectedHandlaggningUpdate);
+      var handlaggningUpdate = handlaggningAdapter.updateHandlaggning(server.baseUrl(), expectedHandlaggningUpdate);
       assertEquals(expectedHandlaggningUpdate, handlaggningUpdate);
+   }
+
+   @Test
+   public void should_throw_error_type_unexpected_error_on_null_base_url()
+   {
+      var exception = assertThrows(HandlaggningException.class,
+            () -> handlaggningAdapter.readHandlaggning(null, UUID.randomUUID()));
+      assertEquals(HandlaggningException.ErrorType.UNEXPECTED_ERROR, exception.getErrorType());
+      assertTrue(exception.getMessage().matches("(?i).*null bas url stöds inte.*"));
+   }
+
+   @Test
+   public void should_throw_error_type_unexpected_error_on_non_absolute_url()
+   {
+      var exception = assertThrows(HandlaggningException.class,
+            () -> handlaggningAdapter.readHandlaggning("localhost:80", UUID.randomUUID()));
+      assertEquals(HandlaggningException.ErrorType.UNEXPECTED_ERROR, exception.getErrorType());
+      assertTrue(exception.getMessage().matches("(?i).*bas url måste vara en absolut http\\(s\\)-url.*"));
+   }
+
+   @Test
+   public void should_throw_error_type_unexpected_error_on_malformed_url_syntax()
+   {
+      var exception = assertThrows(HandlaggningException.class,
+            () -> handlaggningAdapter.readHandlaggning("http:\\\\localhost:80", UUID.randomUUID()));
+      assertEquals(HandlaggningException.ErrorType.UNEXPECTED_ERROR, exception.getErrorType());
+      assertTrue(exception.getMessage().matches("(?i).*oväntat fel vid skapande av handläggningsklient.*"));
    }
 }
