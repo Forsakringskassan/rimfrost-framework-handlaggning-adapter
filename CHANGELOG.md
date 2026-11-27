@@ -2,6 +2,22 @@
 
 Changelog of rimfrost-framework-handlaggning-adapter.
 
+## 2.0.0 (2026-11-27)
+
+### Breaking changes
+
+-  Use per-call baseUrl ([85c5b](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/85c5b44c9affa6f) Lars Persson)  
+
+### Features
+
+-  Use per-call baseUrl ([85c5b](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/85c5b44c9affa6f) Lars Persson)  
+
+### Bug Fixes
+
+-  **deps**  update dependency io.quarkus:quarkus-bom to v3.40.1.2 ([14a3d](https://github.com/Forsakringskassan/rimfrost-framework-handlaggning-adapter/commit/14a3d985b092242) renovate[bot])  
+
+## rimfrost-1_3 (2026-11-12)
+
 ## 1.2.9 (2026-11-12)
 
 ### Bug Fixes
