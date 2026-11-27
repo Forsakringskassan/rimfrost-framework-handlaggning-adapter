@@ -7,7 +7,6 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.Client;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.glassfish.jersey.apache5.connector.Apache5ConnectorProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.JerseyClientBuilder;
@@ -16,17 +15,13 @@ import se.fk.rimfrost.framework.handlaggning.exception.HandlaggningException;
 import se.fk.rimfrost.framework.handlaggning.model.Handlaggning;
 import se.fk.rimfrost.framework.handlaggning.model.HandlaggningUpdate;
 import se.fk.rimfrost.jaxrsspec.controllers.generatedsource.HandlaggningControllerApi;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.UUID;
 
 @ApplicationScoped
 public class HandlaggningAdapter
 {
-
-   @ConfigProperty(name = "handlaggning.api.base-url")
-   String handlaggningBaseUrl;
-
-   private HandlaggningControllerApi handlaggningClient;
-
    private Client client;
 
    @Inject
@@ -39,16 +34,11 @@ public class HandlaggningAdapter
       clientConfig.connectorProvider(new Apache5ConnectorProvider());
       clientConfig.register(AdapterObjectMapperProvider.class);
       this.client = JerseyClientBuilder.createClient(clientConfig);
-      this.handlaggningClient = WebResourceFactory.newResource(
-            HandlaggningControllerApi.class,
-            client.target(this.handlaggningBaseUrl));
    }
 
    @PreDestroy
    void destroy()
    {
-      this.handlaggningClient = null;
-
       if (this.client != null)
       {
          this.client.close();
@@ -56,10 +46,11 @@ public class HandlaggningAdapter
       }
    }
 
-   public Handlaggning readHandlaggning(UUID handlaggningId) throws HandlaggningException
+   public Handlaggning readHandlaggning(String baseUrl, UUID handlaggningId) throws HandlaggningException
    {
       try
       {
+         var handlaggningClient = createHandlaggningClient(baseUrl);
          var getHandlaggningResponse = handlaggningClient.getHandlaggning(handlaggningId);
          if (getHandlaggningResponse == null)
          {
@@ -91,11 +82,13 @@ public class HandlaggningAdapter
       }
    }
 
-   public HandlaggningUpdate updateHandlaggning(HandlaggningUpdate handlaggningUpdate) throws HandlaggningException
+   public HandlaggningUpdate updateHandlaggning(String baseUrl, HandlaggningUpdate handlaggningUpdate)
+         throws HandlaggningException
    {
       var handlaggningId = handlaggningUpdate.handlaggning().id();
       try
       {
+         var handlaggningClient = createHandlaggningClient(baseUrl);
          var apiHandlaggningUpdate = handlaggningMapper.toApiHandlaggningUpdate(handlaggningUpdate);
          var putHandlaggningResponse = handlaggningClient.putHandlaggning(handlaggningId, apiHandlaggningUpdate);
          if (putHandlaggningResponse == null)
@@ -131,4 +124,33 @@ public class HandlaggningAdapter
       }
    }
 
+   private HandlaggningControllerApi createHandlaggningClient(String baseUrl) throws HandlaggningException
+   {
+      if (baseUrl == null)
+      {
+         throw new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR,
+               "Fel vid skapande av handläggningsklient: Null bas url stöds inte");
+      }
+
+      try
+      {
+         var baseUri = new URI(baseUrl);
+
+         if (!("http".equalsIgnoreCase(baseUri.getScheme()) || "https".equalsIgnoreCase(baseUri.getScheme()))
+               || baseUri.getHost() == null)
+         {
+            throw new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR,
+                  "Fel vid skapande av handläggningsklient: Bas url måste vara en absolut http(s)-url");
+         }
+
+         return WebResourceFactory.newResource(
+               HandlaggningControllerApi.class,
+               client.target(baseUri));
+      }
+      catch (IllegalStateException | URISyntaxException ex)
+      {
+         throw new HandlaggningException(HandlaggningException.ErrorType.UNEXPECTED_ERROR,
+               "Oväntat fel vid skapande av handläggningsklient", ex);
+      }
+   }
 }
